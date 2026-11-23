@@ -1,0 +1,1358 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Atelier Vecteurs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=STIX+Two+Text:ital,wght@1,500;1,600&display=swap">
+<style>
+/* Layout : cahier quadrillé — un plan de travail central, les consignes au-dessus, les actions en dessous. Couleurs des vecteurs reprises du cours (u vert, v rouge, somme bleue). */
+:root{
+  --bg:#eef2f7; --paper:#ffffff; --grid:#d7e0ec; --grid-strong:#b9c7da;
+  --ink:#18212e; --muted:#5a6678; --line:#cfd8e4;
+  --u:#2d8a3e; --v:#cc4436; --w:#2c5bcc; --sol:#7b3fc4;
+  --accent:#1f4fb8; --accent-ink:#ffffff; --accent-soft:#e3ebfa;
+  --ok:#1d8150; --ok-soft:#e2f4ea; --mid:#b7791f; --mid-soft:#fbf0dc; --bad:#c03328; --bad-soft:#fbe6e3;
+  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+  --math:"STIX Two Text", "Times New Roman", Georgia, serif;
+  --mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141b; --paper:#161d27; --grid:#243041; --grid-strong:#34445b;
+  --ink:#e7ecf3; --muted:#9aa6b8; --line:#2b3748;
+  --u:#5cc46c; --v:#ff7b6b; --w:#7ea4ff; --sol:#c49dff;
+  --accent:#86a8ff; --accent-ink:#0d1420; --accent-soft:#1d2a44;
+  --ok:#4fcf8a; --ok-soft:#14301f; --mid:#e9b45a; --mid-soft:#352812; --bad:#ff7a6c; --bad-soft:#3a1916;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f141b; --paper:#161d27; --grid:#243041; --grid-strong:#34445b;
+  --ink:#e7ecf3; --muted:#9aa6b8; --line:#2b3748;
+  --u:#5cc46c; --v:#ff7b6b; --w:#7ea4ff; --sol:#c49dff;
+  --accent:#86a8ff; --accent-ink:#0d1420; --accent-soft:#1d2a44;
+  --ok:#4fcf8a; --ok-soft:#14301f; --mid:#e9b45a; --mid-soft:#352812; --bad:#ff7a6c; --bad-soft:#3a1916;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:18px 40px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,46px);font-weight:800;letter-spacing:-.02em}
+h2{font-size:24px;font-weight:800}
+h3{font-size:19px;font-weight:600}
+p{margin:0}
+button,a.btn{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.eyebrow{font-size:13px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700}
+.muted{color:var(--muted)}
+.small{font-size:15px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+.vec{position:relative;display:inline-block;font-family:var(--math);font-style:italic;font-weight:500;padding-top:.32em;line-height:1;margin-inline:.04em}
+.vec::before{content:"";position:absolute;left:.04em;right:.12em;top:.12em;border-top:.075em solid currentColor}
+.vec::after{content:"";position:absolute;right:.08em;top:.015em;width:.22em;height:.22em;border-top:.075em solid currentColor;border-right:.075em solid currentColor;transform:rotate(45deg)}
+.pt{font-family:var(--math);font-style:italic;font-weight:500}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:0;border-radius:12px;padding:13px 20px;min-height:50px;font-weight:700;background:var(--paper);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+.btn.ghost{background:transparent;box-shadow:none;color:var(--accent);padding-inline:10px}
+.btn:disabled{opacity:.45;cursor:default}
+input[type=text],textarea{font:inherit;font-size:18px;width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);min-height:50px}
+textarea{font-size:14px;font-family:var(--mono);min-height:110px;resize:vertical}
+input.code{font-family:var(--mono);letter-spacing:.18em;text-transform:uppercase;font-size:22px}
+label.lbl{display:block;font-weight:700;font-size:15px;margin-bottom:6px}
+
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px;align-items:center;padding-block:10px 22px}
+.hero svg{width:100%;max-width:340px;justify-self:center}
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.mode{border:0;text-align:left;background:var(--paper);border-radius:var(--r);padding:22px;box-shadow:inset 0 0 0 1.5px var(--line);display:flex;flex-direction:column;gap:8px;min-height:150px}
+.mode:active{transform:translateY(1px)}
+.mode .tag{font-family:var(--display);font-size:28px;font-weight:800}
+.mode.train .tag{color:var(--u)}
+.mode.defi .tag{color:var(--v)}
+.panel{background:var(--paper);border-radius:var(--r);padding:20px;box-shadow:inset 0 0 0 1.5px var(--line)}
+
+.notions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.notion{border:0;text-align:left;background:var(--paper);border-radius:var(--r);padding:18px;box-shadow:inset 0 0 0 1.5px var(--line);display:flex;flex-direction:column;gap:10px}
+.notion .meter{height:8px;border-radius:4px;background:var(--grid);overflow:hidden}
+.notion .meter span{display:block;height:100%;background:var(--u);border-radius:4px}
+.notion small{color:var(--muted);font-variant-numeric:tabular-nums}
+.notion.mix{background:var(--accent-soft)}
+.counts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.count{border:0;border-radius:var(--r);background:var(--paper);box-shadow:inset 0 0 0 1.5px var(--line);padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.count b{font-family:var(--display);font-size:40px;line-height:1}
+.count span{color:var(--muted);font-size:15px}
+.levels{display:flex;gap:8px;flex-wrap:wrap}
+.lvl{padding:6px 12px;border-radius:999px;background:var(--accent-soft);font-size:15px}
+
+.topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-bottom:12px}
+.topbar .info{display:flex;gap:8px;align-items:center;font-weight:700;font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.chip{padding:5px 12px;border-radius:999px;background:var(--paper);box-shadow:inset 0 0 0 1.5px var(--line);font-size:15px;font-weight:700;white-space:nowrap}
+.chip.timer{font-family:var(--mono)}
+.progress{display:flex;gap:4px;margin-bottom:12px}
+.progress span{flex:1;height:10px;border-radius:5px;background:var(--grid)}
+.progress span.ok1{background:var(--ok)} .progress span.ok2{background:var(--mid)} .progress span.ko{background:var(--bad)} .progress span.done{background:var(--accent)}
+.progress span.cur{background:var(--paper);box-shadow:inset 0 0 0 2px var(--accent)}
+.prompt{background:var(--paper);border-radius:var(--r);padding:16px 18px;font-size:20px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.prompt .why{display:block;font-size:14px;font-weight:700;color:var(--mid);margin-bottom:4px}
+.prompt .hint{display:block;font-size:15px;color:var(--muted);margin-top:4px}
+.board{position:relative;margin-top:12px;background:var(--paper);border-radius:var(--r);box-shadow:inset 0 0 0 1.5px var(--line);overflow:hidden}
+.board svg *{pointer-events:none}
+.board svg{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.zoombar{display:flex;align-items:center;gap:8px}
+.zoombar button{width:46px;height:46px;border-radius:12px;border:0;background:var(--paper);box-shadow:inset 0 0 0 1.5px var(--line),0 2px 8px rgba(0,0,0,.08);font-size:24px;font-weight:700;line-height:1;color:var(--accent)}
+.zoombar button.txt{font-size:14px}
+.boardnote{font-size:14px;color:var(--muted);margin-top:6px}
+.choices{margin-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.choice{border:0;background:var(--paper);border-radius:var(--r);min-height:84px;font-size:30px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.choice.sel{box-shadow:inset 0 0 0 3px var(--accent);background:var(--accent-soft)}
+.choice.good{box-shadow:inset 0 0 0 3px var(--ok);background:var(--ok-soft)}
+.choice.wrong{box-shadow:inset 0 0 0 3px var(--bad);background:var(--bad-soft)}
+.choice:disabled{opacity:.45}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-top:12px}
+.actions .right{display:flex;gap:10px;flex-wrap:wrap}
+.feedback{margin-top:12px;border-radius:var(--r);padding:16px 18px;font-size:18px}
+.feedback.ok{background:var(--ok-soft);box-shadow:inset 4px 0 0 var(--ok)}
+.feedback.bad{background:var(--bad-soft);box-shadow:inset 4px 0 0 var(--bad)}
+.feedback.retry{background:var(--mid-soft);box-shadow:inset 4px 0 0 var(--mid)}
+.feedback.info{background:var(--accent-soft)}
+.feedback b.v{display:block;font-family:var(--display);font-size:21px;margin-bottom:4px}
+.feedback.ok b.v{color:var(--ok)} .feedback.bad b.v{color:var(--bad)} .feedback.retry b.v{color:var(--mid)}
+.feedback ul{margin:6px 0 0;padding-left:20px}
+.rappel{margin-top:12px;background:var(--paper);border-radius:var(--r);padding:14px 18px;box-shadow:inset 0 0 0 1.5px var(--line);font-size:16px}
+.rappel p+p{margin-top:6px}
+.flash{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);font-family:var(--display);font-size:64px;font-weight:800;padding:18px 34px;border-radius:20px;background:var(--paper);box-shadow:0 10px 40px rgba(0,0,0,.18);pointer-events:none;z-index:20}
+.flash.ok{color:var(--ok)} .flash.bad{color:var(--bad)}
+
+.gl{stroke:var(--grid);stroke-width:.03}
+.dock{fill:var(--accent-soft);stroke:var(--grid-strong);stroke-width:.04;stroke-dasharray:.18 .12}
+.docklbl{fill:var(--muted);font-family:var(--body);font-size:.42px;font-weight:700}
+.sep{stroke:var(--grid-strong);stroke-width:.05;stroke-dasharray:.2 .15}
+.poly{fill:var(--accent-soft);fill-opacity:.55;stroke:var(--ink);stroke-width:.06;stroke-linejoin:round}
+.polyimg{fill:var(--accent);fill-opacity:.1;stroke:var(--accent);stroke-width:.06;stroke-linejoin:round}
+.polysol{fill:none;stroke:var(--sol);stroke-width:.06;stroke-dasharray:.2 .14}
+.seg{stroke:var(--ink);stroke-width:.06}
+.pl{font-family:var(--math);font-style:italic;font-weight:600;font-size:.62px}
+.zone{fill:var(--muted);font-family:var(--body);font-size:.4px;font-weight:700;letter-spacing:.04em}
+
+.result{background:var(--paper);border-radius:var(--r);padding:24px;box-shadow:inset 0 0 0 1.5px var(--line);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;text-align:center}
+.result .big{font-family:var(--display);font-size:46px;font-weight:800;font-variant-numeric:tabular-nums}
+.result .codeout{font-family:var(--mono);font-size:30px;font-weight:700;letter-spacing:.08em;color:var(--accent)}
+.recap{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.recap button{border:0;border-radius:12px;padding:12px 6px;background:var(--paper);box-shadow:inset 0 0 0 1.5px var(--line);font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px}
+.recap button .s{font-size:22px}
+.recap .ok .s{color:var(--ok)} .recap .bad .s{color:var(--bad)}
+.recap small{font-weight:400;color:var(--muted);font-size:13px;text-align:center}
+.sendbox{background:var(--accent-soft);border-radius:var(--r);padding:18px}
+
+.overlay{position:fixed;inset:0;background:rgba(10,15,25,.55);z-index:30;overflow:auto;padding:16px}
+.sheet{max-width:1000px;margin:20px auto;background:var(--bg);border-radius:18px;padding:18px}
+
+.bigcode{font-family:var(--mono);font-size:clamp(44px,10vw,80px);font-weight:700;letter-spacing:.2em;color:var(--accent);text-align:center;padding-block:8px}
+.tablewrap{overflow-x:auto;margin-top:6px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:16px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.pill{padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.bad{background:var(--bad-soft);color:var(--bad)}
+.err{color:var(--bad);font-weight:700;font-size:15px}
+.okmsg{color:var(--ok);font-weight:700;font-size:15px}
+
+
+/* écran d'exercice : tout tient dans la hauteur de l'écran */
+body.exmode .wrap{max-width:none;padding-block:8px}
+body.exmode #s-ex{display:grid;gap:10px;height:calc(100vh - 16px);height:calc(100dvh - 16px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+  grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;grid-template-areas:"top" "prompt" "main" "side"}
+.ex-top{grid-area:top;min-width:0}
+.ex-top .topbar{margin-bottom:6px}
+.ex-top .progress{margin-bottom:0}
+.ex-top .feedback{margin-top:8px}
+#s-ex .prompt{grid-area:prompt;font-size:18px;padding:12px 16px}
+.ex-main{grid-area:main;min-height:0;min-width:0;display:flex}
+.ex-main .board{margin:0;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.ex-main .board svg{flex:none}
+.ex-main .choices{margin:0;flex:1;align-content:center}
+.ex-side{grid-area:side;min-height:0;min-width:0;overflow:auto;max-height:36vh;max-height:36dvh;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.ex-side .actions{margin:0;flex-direction:column-reverse;align-items:stretch}
+.ex-side .actions .right,.ex-side .actions .row{flex-wrap:nowrap}
+.ex-side .actions .btn{flex:1}
+.ex-side .feedback,.ex-side .rappel{margin:0;font-size:16px}
+.ex-side .boardnote{margin:0}
+@media (orientation:landscape) and (min-width:820px){
+  body.exmode #s-ex{grid-template-columns:minmax(270px,330px) minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr);grid-template-areas:"top top" "prompt main" "side main"}
+  .ex-side{max-height:none}
+}
+.optgroup{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:0;border-radius:999px;padding:10px 16px;min-height:46px;background:var(--paper);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line);font-weight:700}
+.opt.on{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+.opt.all{border-style:dashed}
+.codezone{background:var(--accent-soft);border-radius:var(--r);padding:12px 16px 16px;display:flex;flex-direction:column;gap:8px;text-align:center}
+.defisum{font-weight:700;color:var(--accent)}
+.ctl{font-weight:400;color:var(--muted);font-size:15px}
+.ctl b{font-family:var(--mono);color:var(--ink);letter-spacing:.12em;font-size:17px}
+.defisum.bad{color:var(--bad)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--grid);padding:5px;border-radius:16px}
+.tab{border:0;border-radius:12px;min-height:50px;font-weight:700;background:transparent;color:var(--muted)}
+.tab.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.duelform{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:10px;align-items:end}
+tr.me td{font-weight:700;color:var(--accent)}
+input[type=password]{font:inherit;font-size:18px;width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);min-height:50px}
+.slider{display:flex;align-items:center;gap:12px;max-width:520px}
+.slider input{flex:1;-webkit-appearance:none;appearance:none;height:10px;border-radius:5px;background:linear-gradient(to right,var(--accent) 0 var(--p,25%),var(--grid) var(--p,25%) 100%);outline-offset:6px}
+.slider input::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;background:var(--paper);border:3px solid var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.slider input::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:var(--paper);border:3px solid var(--accent)}
+.focuslist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.focuslist li{display:flex;flex-direction:column;gap:2px;padding:10px 14px;border-radius:12px;background:var(--mid-soft)}
+.notion.strongcard{background:var(--ok-soft);box-shadow:inset 0 0 0 2px var(--ok);cursor:default}
+.notion.strongcard h3{color:var(--ok)}
+.strongtag{color:var(--ok)!important;font-weight:700}
+.winpanel .focuslist li{background:var(--ok-soft)}
+.feedback .star{margin-top:8px;font-weight:700;color:var(--ok)}
+.notion.weakcard{background:var(--mid-soft);box-shadow:inset 0 0 0 2px var(--mid)}
+.notion.weakcard h3{color:var(--mid)}
+.weaklist{margin:0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:2px}
+.weaktag{color:var(--mid)!important;font-weight:700}
+.setupcount{display:flex;align-items:baseline;gap:10px}
+.setupcount .nbig{font-family:var(--display);font-size:56px;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.setupcount span{font-size:20px;font-weight:700}
+.nval{font-family:var(--display);font-size:22px;color:var(--accent);font-variant-numeric:tabular-nums}
+.formlist{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.formlist li{display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:12px;background:var(--accent-soft)}
+@media (max-width:760px){.duelform{grid-template-columns:1fr}}
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr}
+  .hero svg{max-width:220px}
+  .modes,.choices{grid-template-columns:1fr}
+  .notions,.counts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .result{grid-template-columns:1fr}
+  .prompt{font-size:18px}
+}
+@media (max-width:460px){.notions{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+
+<section id="s-home">
+  <div class="hero">
+    <div class="stack">
+      <span class="eyebrow">Seconde · Les vecteurs, chapitre 1</span>
+      <h1>Atelier Vecteurs</h1>
+      <p class="muted" style="max-width:52ch">Translations, vecteurs égaux, milieu, vecteurs opposés, somme et relation de Chasles. Place les points et trace les vecteurs avec le doigt sur le quadrillage.</p>
+    </div>
+    <svg viewBox="-0.5 -0.5 9 6.5" aria-hidden="true"><g id="hero-art"></g></svg>
+  </div>
+  <div class="stack">
+    <div class="modes">
+      <button class="mode train" id="go-train" type="button">
+        <span class="tag">Entraînement</span>
+        <span>Choisis une notion et le nombre d'exercices. Ça commence facile et ça monte en difficulté. Tu as droit à un deuxième essai.</span>
+      </button>
+      <button class="mode defi" id="go-defi" type="button">
+        <span class="tag">Défi</span>
+        <span>Questions chronométrées préparées par ton professeur. Avec le même code de défi, tout le monde a les mêmes questions.</span>
+      </button>
+    </div>
+    <button class="btn ghost" id="go-prof" type="button" style="align-self:flex-start">Espace professeur</button>
+  </div>
+</section>
+
+<section id="s-notions" hidden>
+  <div class="topbar"><button class="btn ghost" data-home type="button">← Accueil</button></div>
+  <h2>Choisis une notion</h2>
+  <p class="muted" style="margin:6px 0 16px">Les notions suivent l'ordre du cours.</p>
+  <div class="notions" id="notion-list"></div>
+  <div class="row" id="reset-row" style="margin-top:18px"><button class="btn ghost" id="reset-go" type="button">Effacer mes résultats sur cet iPad</button></div>
+  <div class="feedback info" id="reset-confirm" hidden><div class="row" style="justify-content:space-between"><span>Effacer la progression, les points forts et les points faibles enregistrés sur cet iPad ?</span>
+    <span class="row"><button class="btn" id="reset-no" type="button">Annuler</button><button class="btn primary" id="reset-yes" type="button">Effacer</button></span></div></div>
+</section>
+
+<section id="s-setup" hidden>
+  <div class="topbar"><button class="btn ghost" id="setup-back" type="button">← Notions</button></div>
+  <div class="stack" style="max-width:720px">
+    <span class="eyebrow" id="setup-notion"></span>
+    <h2>Combien d'exercices veux-tu faire ?</h2>
+    <div class="panel stack">
+      <div class="setupcount"><b class="nbig" id="setup-nval">10</b><span>exercices</span></div>
+      <div class="slider" style="max-width:none"><span class="muted small">3</span><input type="range" id="setup-n" min="3" max="30" step="1" value="10" aria-label="Nombre d'exercices"><span class="muted small">30</span></div>
+      <div class="row"><button class="btn primary" id="setup-go" type="button">Commencer la série</button></div>
+    </div>
+    <div class="panel stack">
+      <h3>Comment ça marche</h3>
+      <div class="levels"><span class="lvl">Niveau 1 · pour démarrer</span><span class="lvl">Niveau 2 · cas courants</span><span class="lvl">Niveau 3 · pour aller plus loin</span></div>
+      <p class="muted small">La série commence au niveau 1 et monte jusqu'au niveau 3. Si tu te trompes, tu as un indice et un deuxième essai. La série s'adapte à tes erreurs : après un exercice raté, tu en refais un du même type en plus simple, et les types d'exercices qui te posent problème reviennent plus souvent.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s-defi" hidden>
+  <div class="topbar"><button class="btn ghost" data-home type="button">← Accueil</button></div>
+  <div class="stack" style="max-width:760px">
+    <h2>Défi</h2>
+    <p class="muted">La note compte d'abord, le temps départage les égalités. Pas de correction pendant le défi : tu la verras à la fin.</p>
+    <div class="panel stack">
+      <div><label class="lbl" for="defi-name">Ton prénom et ton nom</label><input type="text" id="defi-name" autocomplete="off" placeholder="Ex. Léa Martin"></div>
+      <div><label class="lbl" for="defi-class">Ta classe</label><input type="text" id="defi-class" autocomplete="off" placeholder="Ex. 2nde 3"></div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab on" type="button" role="tab" data-tab="join" aria-selected="true">J'ai un code</button>
+      <button class="tab" type="button" role="tab" data-tab="create" aria-selected="false">Défier mes camarades</button>
+    </div>
+    <div class="panel stack" id="tab-join">
+      <div><label class="lbl" for="defi-code">Code du défi</label><input type="text" class="code" id="defi-code" maxlength="7" autocomplete="off" autocapitalize="characters" placeholder="Ex. K7Q BMR"></div>
+      <p class="defisum" id="defi-summary" hidden></p>
+      <p class="muted small">Le code est donné par ton professeur ou par un camarade.</p>
+      <p class="err" id="defi-err" hidden></p>
+      <div class="row"><button class="btn primary" id="defi-start" type="button">Commencer le défi</button></div>
+    </div>
+    <div class="panel stack" id="tab-create" hidden>
+      <p class="muted">Prépare ton défi, puis donne le code à tes camarades : vous aurez tous exactement les mêmes questions. À la fin, chacun entre le nom et le code de vérification des autres pour savoir qui a gagné.</p>
+      <div class="cfgpicker stack" id="stu-cfg"></div>
+      <p class="err" id="stu-err" hidden></p>
+      <div class="row"><button class="btn primary" id="stu-gen" type="button">Créer le défi</button></div>
+      <div class="codezone" id="stu-codezone" hidden>
+        <p class="small">Donne ce code à tes camarades :</p>
+        <div class="bigcode" id="stu-bigcode"></div>
+        <p class="defisum" id="stu-summary"></p>
+        <div class="row" style="justify-content:center"><button class="btn primary" id="stu-start" type="button">Commencer le défi</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s-lock" hidden>
+  <div class="topbar"><button class="btn ghost" data-home type="button">← Accueil</button></div>
+  <div class="panel stack" style="max-width:460px">
+    <h2>Espace professeur</h2>
+    <div><label class="lbl" for="lock-pw">Mot de passe</label><input type="password" id="lock-pw" autocomplete="current-password"></div>
+    <p class="err" id="lock-err" hidden></p>
+    <div class="row"><button class="btn primary" id="lock-go" type="button">Entrer</button></div>
+  </div>
+</section>
+
+<section id="s-ex" hidden>
+  <div class="ex-top">
+    <div class="topbar">
+      <button class="btn ghost" id="ex-back" type="button">← Notions</button>
+      <div class="info" id="ex-info"></div>
+    </div>
+    <div class="progress" id="ex-progress"></div>
+    <div id="quit-confirm" class="feedback info" hidden>
+      <div class="row" style="justify-content:space-between"><span id="quit-text"></span>
+      <span class="row"><button class="btn" id="quit-no" type="button">Continuer</button><button class="btn primary" id="quit-yes" type="button">Quitter</button></span></div>
+    </div>
+  </div>
+  <div class="prompt" id="ex-prompt"></div>
+  <div class="ex-main">
+    <div class="board fit" id="ex-board-wrap">
+      <svg id="board" viewBox="-0.7 -0.7 19.4 13.4" role="img" aria-label="Quadrillage de travail"></svg>
+    </div>
+    <div class="choices" id="ex-choices" hidden></div>
+  </div>
+  <div class="ex-side">
+    <div class="actions">
+      <div class="row"><button class="btn" id="ex-rappel" type="button">Rappel du cours</button><button class="btn" id="ex-reset" type="button">Recommencer</button></div>
+      <div class="right"><button class="btn primary" id="ex-validate" type="button">Valider</button><button class="btn primary" id="ex-next" type="button" hidden>Exercice suivant →</button></div>
+    </div>
+    <div class="feedback" id="ex-feedback" hidden></div>
+    <div class="rappel" id="ex-rappel-box" hidden></div>
+    <div class="zoombar" id="ex-zoom"><span class="muted small">Zoom</span><button type="button" data-z="out" aria-label="Dézoomer">−</button><button type="button" data-z="in" aria-label="Zoomer">+</button><button type="button" class="txt" data-z="reset" aria-label="Revenir à la vue entière">1:1</button></div>
+    <p class="boardnote" id="ex-boardnote">Deux doigts pour zoomer. Une fois zoomé, glisse un doigt dans une zone vide pour te déplacer.</p>
+  </div>
+</section>
+
+<section id="s-bilan" hidden>
+  <div class="topbar"><button class="btn ghost" data-home type="button">← Accueil</button></div>
+  <div class="stack" style="max-width:760px">
+    <span class="eyebrow" id="bilan-notion"></span>
+    <h2 id="bilan-title">Série terminée</h2>
+    <div class="progress" id="bilan-progress"></div>
+    <div class="result">
+      <div><div class="eyebrow">Du premier coup</div><div class="big" id="bilan-ok1" style="color:var(--ok)"></div></div>
+      <div><div class="eyebrow">Au deuxième essai</div><div class="big" id="bilan-ok2" style="color:var(--mid)"></div></div>
+      <div><div class="eyebrow">À revoir</div><div class="big" id="bilan-ko" style="color:var(--bad)"></div></div>
+    </div>
+    <p id="bilan-msg"></p>
+    <div class="panel stack winpanel" id="bilan-wins" hidden></div>
+    <div class="panel stack" id="bilan-focus" hidden></div>
+    <div class="row"><button class="btn primary" id="bilan-again" type="button">Refaire une série</button><button class="btn" id="bilan-other" type="button">Choisir une autre notion</button></div>
+  </div>
+</section>
+
+<section id="s-result" hidden>
+  <div class="topbar"><button class="btn ghost" data-home type="button">← Accueil</button><span class="chip" id="res-defi"></span></div>
+  <div class="stack">
+    <h2 id="res-title">Défi terminé</h2>
+    <div class="result">
+      <div><div class="eyebrow">Score</div><div class="big" id="res-score"></div></div>
+      <div><div class="eyebrow">Temps</div><div class="big" id="res-time"></div></div>
+      <div><div class="eyebrow">Code de vérification</div><div class="codeout" id="res-code"></div></div>
+    </div>
+    <div class="sendbox stack" id="res-send"></div>
+    <div class="panel stack" id="res-duel" hidden>
+      <h3>Qui a gagné ?</h3>
+      <p class="muted small">Demande à chaque camarade son nom et son code de vérification, et ajoute-le. L'appli vérifie le code : impossible de tricher sur son score.</p>
+      <div class="duelform">
+        <div><label class="lbl" for="duel-name">Prénom et nom du camarade</label><input type="text" id="duel-name" autocomplete="off"></div>
+        <div><label class="lbl" for="duel-code">Son code de vérification</label><input type="text" class="code" id="duel-code" autocomplete="off" placeholder="X-XXX-XXX"></div>
+        <button class="btn primary" id="duel-add" type="button">Ajouter</button>
+      </div>
+      <p class="err" id="duel-err" hidden></p>
+      <div class="tablewrap"><table><thead><tr><th>Rang</th><th>Élève</th><th>Score</th><th>Temps</th></tr></thead><tbody id="duel-rows"></tbody></table></div>
+    </div>
+    <h3>Revoir les questions</h3>
+    <div class="recap" id="res-recap"></div>
+  </div>
+</section>
+
+<section id="s-prof" hidden>
+  <div class="topbar"><button class="btn ghost" data-home type="button">← Accueil</button></div>
+  <div class="stack">
+    <div class="row" style="justify-content:space-between"><h2>Espace professeur</h2><button class="btn" id="prof-lock" type="button">Verrouiller</button></div>
+    <div class="panel stack">
+      <h3>1. Préparer un défi pour la classe</h3>
+      <div class="cfgpicker stack" id="prof-cfg"></div>
+      <div class="row"><button class="btn primary" id="prof-gen" type="button">Générer le code du défi</button></div>
+      <div class="codezone">
+        <div class="bigcode" id="prof-bigcode">—</div>
+        <p id="prof-summary" class="defisum" hidden></p>
+        <div class="row" style="justify-content:center"><button class="btn" id="prof-try" type="button" hidden>Essayer ce défi</button></div>
+      </div>
+      <p class="muted small">Projette le code au tableau. Chaque élève le saisit dans « Défi » et reçoit les mêmes questions, dans le même ordre. Le code contient tous les réglages : il n'y a rien à configurer sur les iPad.</p>
+      <p class="muted small">Projette aussi le <b>contrôle des questions</b> (3 caractères). Après avoir saisi le code, chaque élève voit son propre contrôle : s'il est différent, son iPad n'a pas la dernière version de l'appli. Il doit alors recharger la page.</p>
+    </div>
+    <div class="panel stack">
+      <h3>2. Formulaires Microsoft Forms</h3>
+      <div id="prof-form-status"></div>
+      <p class="muted small">Pour ajouter un formulaire (par exemple un par classe) : crée-le avec les 6 mêmes questions, obtiens son lien prérempli, vérifie-le ci-dessous, puis envoie-le à Claude avec le nom à afficher.</p>
+      <div><label class="lbl" for="prof-tpl">Tester un lien prérempli</label><textarea id="prof-tpl" placeholder="Colle ici le lien obtenu avec « Obtenir l'URL préremplie »"></textarea></div>
+      <div class="row"><button class="btn" id="prof-tpl-test" type="button">Vérifier le lien</button><a class="btn" id="prof-tpl-open" href="#" target="_blank" rel="noopener" hidden>Ouvrir un envoi d'essai</a></div>
+      <p id="prof-tpl-msg" class="small" hidden></p>
+    </div>
+    <div class="panel stack">
+      <h3>3. Classement à partir d'Excel</h3>
+      <p class="muted">Dans Forms, ouvre les réponses dans Excel, sélectionne toutes les lignes (titres compris) et copie-les. Colle-les ci-dessous. Chaque ligne est contrôlée : si l'élève a modifié son score, son temps ou son nom dans le formulaire, c'est signalé en rouge.</p>
+      <textarea id="prof-paste" placeholder="Colle ici les lignes copiées depuis Excel"></textarea>
+      <div class="row"><button class="btn primary" id="prof-import" type="button">Calculer le classement</button>
+        <label class="lbl" for="prof-filter" style="margin:0">Défi</label><input type="text" class="code" id="prof-filter" maxlength="7" style="max-width:190px" autocomplete="off"></div>
+      <p class="err" id="prof-err" hidden></p>
+      <div class="tablewrap"><table><thead><tr><th>Rang</th><th>Élève</th><th>Classe</th><th>Score</th><th>Temps</th><th>Vérification</th></tr></thead><tbody id="prof-rows"><tr><td colspan="6" class="muted">Le classement apparaîtra ici.</td></tr></tbody></table></div>
+      <p class="muted small">Le score et le temps affichés sont toujours les vrais, lus dans le code de vérification, même si l'élève les a modifiés dans le formulaire. Si un élève a envoyé plusieurs fois, seul son meilleur résultat est gardé.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="overlay" id="review" hidden>
+  <div class="sheet stack">
+    <div class="row" style="justify-content:space-between"><h3 id="rv-title"></h3><button class="btn" id="rv-close" type="button">Fermer</button></div>
+    <div class="prompt" id="rv-prompt"></div>
+    <div class="board" id="rv-board-wrap"><svg id="rv-board" viewBox="-0.7 -0.7 19.4 13.4"></svg></div>
+    <div class="choices" id="rv-choices" hidden></div>
+    <div class="feedback" id="rv-feedback"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* Lien prérempli Microsoft Forms de la classe (marqueurs NOM, CLASSE, DEFI, SCORE, TEMPS, CODE). */
+/* Formulaires Microsoft Forms reliés à l'appli (liens préremplis avec les marqueurs NOM, CLASSE, DEFI, SCORE, TEMPS, CODE).
+   L'ordre compte : le numéro du formulaire est enregistré dans le code des défis. Ajouter à la fin, ne jamais en retirer. 7 au maximum. */
+const FORMS=[
+  {name:'Défi Tout le chapitre',url:'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=NJVHpnV3KEqHxOWk3wCr5ElhYuUHQ3BKuw9AQGFWnZNUMkFCQTNRSFJWRlJTMzdVVzNSRkk4ME1OSi4u&r1f65b74b9e594abd814f976b2bb034ba=NOM&rb7231c04b65c4a628a3184769e42a7ed=CLASSE&r4ea262828ff64d3688579ed43b939372=DEFI&r70897e4f77e747f781309ba4d8522c65=SCORE&r39e6fe66fe7c4685a44021035bfee6b9=TEMPS&r1de3ed4d58034775944a1f66026a3fab=CODE'},
+  {name:'Défi Translation',url:'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=NJVHpnV3KEqHxOWk3wCr5ElhYuUHQ3BKuw9AQGFWnZNURTJFVjVIUFkwRFk1SjFHRFhQVzRVWjhENC4u&r1f65b74b9e594abd814f976b2bb034ba=NOM&rb7231c04b65c4a628a3184769e42a7ed=CLASSE&r4ea262828ff64d3688579ed43b939372=DEFI&r70897e4f77e747f781309ba4d8522c65=SCORE&r39e6fe66fe7c4685a44021035bfee6b9=TEMPS&r1de3ed4d58034775944a1f66026a3fab=CODE'},
+  {name:'Défi Vecteurs égaux',url:'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=NJVHpnV3KEqHxOWk3wCr5ElhYuUHQ3BKuw9AQGFWnZNUMFlDMlVPWkVJSjRLTkRPVFlSV0lUUTlFUi4u&r1f65b74b9e594abd814f976b2bb034ba=NOM&rb7231c04b65c4a628a3184769e42a7ed=CLASSE&r4ea262828ff64d3688579ed43b939372=DEFI&r70897e4f77e747f781309ba4d8522c65=SCORE&r39e6fe66fe7c4685a44021035bfee6b9=TEMPS&r1de3ed4d58034775944a1f66026a3fab=CODE'},
+  {name:'Défi Milieu',url:'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=NJVHpnV3KEqHxOWk3wCr5ElhYuUHQ3BKuw9AQGFWnZNUQTRZS1BUUjVCRElDMTlYUEs5QkdVSFJLOC4u&r1f65b74b9e594abd814f976b2bb034ba=NOM&rb7231c04b65c4a628a3184769e42a7ed=CLASSE&r4ea262828ff64d3688579ed43b939372=DEFI&r70897e4f77e747f781309ba4d8522c65=SCORE&r39e6fe66fe7c4685a44021035bfee6b9=TEMPS&r1de3ed4d58034775944a1f66026a3fab=CODE'},
+  {name:'Défi Vecteurs opposés',url:'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=NJVHpnV3KEqHxOWk3wCr5ElhYuUHQ3BKuw9AQGFWnZNURUxFQklDNFM4N0RPTU1WNVAwMk9NWExJRi4u&r1f65b74b9e594abd814f976b2bb034ba=NOM&rb7231c04b65c4a628a3184769e42a7ed=CLASSE&r4ea262828ff64d3688579ed43b939372=DEFI&r70897e4f77e747f781309ba4d8522c65=SCORE&r39e6fe66fe7c4685a44021035bfee6b9=TEMPS&r1de3ed4d58034775944a1f66026a3fab=CODE'},
+  {name:'Défi Somme et Chasles',url:'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=NJVHpnV3KEqHxOWk3wCr5ElhYuUHQ3BKuw9AQGFWnZNUQVhMUjNBSDNQRTU0QThINVdHUVNQSEtYQS4u&r1f65b74b9e594abd814f976b2bb034ba=NOM&rb7231c04b65c4a628a3184769e42a7ed=CLASSE&r4ea262828ff64d3688579ed43b939372=DEFI&r70897e4f77e747f781309ba4d8522c65=SCORE&r39e6fe66fe7c4685a44021035bfee6b9=TEMPS&r1de3ed4d58034775944a1f66026a3fab=CODE'},
+  {name:'Défi Différence',url:'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=NJVHpnV3KEqHxOWk3wCr5ElhYuUHQ3BKuw9AQGFWnZNUNllaQ1hQS1dBNzVNSUdYNlVEWFdUVDUyNC4u&r1f65b74b9e594abd814f976b2bb034ba=NOM&rb7231c04b65c4a628a3184769e42a7ed=CLASSE&r4ea262828ff64d3688579ed43b939372=DEFI&r70897e4f77e747f781309ba4d8522c65=SCORE&r39e6fe66fe7c4685a44021035bfee6b9=TEMPS&r1de3ed4d58034775944a1f66026a3fab=CODE'},
+];
+
+/* ---------- outils ---------- */
+const $=s=>document.querySelector(s);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function mkR(seed){const r=mulberry32(seed>>>0);return{rnd:r,int:(a,b)=>a+Math.floor(r()*(b-a+1)),pick:a=>a[Math.floor(r()*a.length)],shuffle:a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}}}
+function fnv(s){let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)}return h>>>0}
+const add=(p,q)=>[p[0]+q[0],p[1]+q[1]], sub=(p,q)=>[p[0]-q[0],p[1]-q[1]], neg=v=>[-v[0],-v[1]], mul=(v,k)=>[v[0]*k,v[1]*k];
+const eq=(p,q)=>p[0]===q[0]&&p[1]===q[1];
+const cross=(u,v)=>u[0]*v[1]-u[1]*v[0], dot=(u,v)=>u[0]*v[0]+u[1]*v[1];
+/* Distance calculée avec Math.sqrt (résultat identique sur tous les navigateurs, contrairement à Math.hypot) : indispensable pour que les défis soient les mêmes partout. */
+const dist=(p,q)=>{const dx=p[0]-q[0],dy=p[1]-q[1];return Math.sqrt(dx*dx+dy*dy)};
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+function segDist(p,a,b){const d=sub(b,a),L=dot(d,d);if(!L)return dist(p,a);let t=dot(sub(p,a),d)/L;t=Math.max(0,Math.min(1,t));return dist(p,[a[0]+t*d[0],a[1]+t*d[1]])}
+
+const GW=18,GH=12;
+const BOX={x0:1,x1:14,y0:1,y1:11};
+const CBOX={x0:7,x1:17,y0:1,y1:11};
+const DOCK=[[17,2],[17,4],[17,6],[17,8]];
+const inB=(p,b=BOX)=>p[0]>=b.x0&&p[0]<=b.x1&&p[1]>=b.y0&&p[1]<=b.y1;
+const rp=(R,b=BOX)=>[R.int(b.x0,b.x1),R.int(b.y0,b.y1)];
+function farEnough(pts,m){for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++)if(dist(pts[i],pts[j])<m)return false;return true}
+/* Vecteur selon le niveau : 1 = horizontal ou vertical, 2 = oblique court, 3 = oblique plus long */
+function vecL(R,L,max=4){
+  if(L<=1){const k=R.int(2,Math.min(max,4));return R.pick([[k,0],[-k,0],[0,k],[0,-k]])}
+  if(L===2){for(;;){const v=[R.int(-3,3),R.int(-3,3)];if(v[0]&&v[1]&&Math.abs(v[0])+Math.abs(v[1])<=5)return v}}
+  for(;;){const v=[R.int(-max,max),R.int(-max,max)];if(v[0]&&v[1]&&Math.abs(v[0])+Math.abs(v[1])>=4)return v}
+}
+function mw(v){const p=[],n=k=>k>1?'carreaux':'carreau';
+  if(v[0])p.push(`${Math.abs(v[0])} ${n(Math.abs(v[0]))} vers la ${v[0]>0?'droite':'gauche'}`);
+  if(v[1])p.push(`${Math.abs(v[1])} ${n(Math.abs(v[1]))} vers le ${v[1]<0?'haut':'bas'}`);
+  return p.join(' et ')||'aucun déplacement'}
+const V=s=>`<span class="vec">${s}</span>`;
+const P=s=>`<span class="pt">${s}</span>`;
+const ZERO=V('0');
+const sp=(dx,lo,hi,R)=>R.int(lo+Math.max(0,-dx),hi-Math.max(0,dx));
+
+/* ---------- générateurs d'exercices (R : hasard, L : niveau 1 à 3) ---------- */
+const G={};
+
+G.trans_point=(R,L)=>{
+  const u=vecL(R,L),named=L>=3;
+  const A=rp(R),A2=add(A,u),M=rp(R),M2=add(M,u);
+  if(!inB(A2)||!inB(M2)||!farEnough([A,A2,M,M2],2))return null;
+  if(segDist(M,A,A2)<1.2||segDist(M2,A,A2)<1.2)return null;
+  const lab=named?V('AA′'):V('u');
+  return{notion:'trans',type:'point',
+    prompt:`Place le point ${P('M′')}, image de ${P('M')} par la translation de vecteur ${lab}.`,
+    fixed:{arrows:[{a:A,b:A2,c:'u',label:named?null:'u'}],points:[...(named?[{p:A,n:'A'},{p:A2,n:'A′'}]:[]),{p:M,n:'M'}]},
+    movables:[{n:'M′',t:M2}],
+    sol:{arrows:[{a:M,b:M2,c:'sol',dash:1}]},
+    hint:`Compte le déplacement de la flèche ${lab} : combien de carreaux horizontalement, puis verticalement ? Refais exactement le même déplacement en partant de ${P('M')}.`,
+    explain:`On part de ${P('M')} et on reproduit le déplacement de la flèche ${lab} : ${mw(u)}.`};
+};
+
+G.trans_fig=(R,L)=>{
+  const u=vecL(R,L),A=rp(R),A2=add(A,u),B=rp(R),C=add(B,vecL(R,Math.max(2,L))),D=add(B,vecL(R,Math.max(2,L)));
+  if(Math.abs(cross(sub(C,B),sub(D,B)))<3)return null;
+  const B2=add(B,u),C2=add(C,u),D2=add(D,u);
+  if(![A2,C,D,B2,C2,D2].every(p=>inB(p)))return null;
+  if(!farEnough([A,A2,B,C,D],2)||!farEnough([A,A2,B,C,D,B2,C2,D2],1))return null;
+  if([B,C,D].some(p=>segDist(p,A,A2)<.9))return null;
+  return{notion:'trans',type:'point',imagePoly:true,
+    prompt:`Construis l'image ${P('B′C′D′')} du triangle ${P('BCD')} par la translation de vecteur ${V('AA′')}.<span class="hint">Fais glisser les points ${P('B′')}, ${P('C′')} et ${P('D′')} à leur place.</span>`,
+    fixed:{polys:[{pts:[B,C,D]}],arrows:[{a:A,b:A2,c:'u'}],points:[{p:A,n:'A'},{p:A2,n:'A′'},{p:B,n:'B'},{p:C,n:'C'},{p:D,n:'D'}]},
+    movables:[{n:'B′',t:B2},{n:'C′',t:C2},{n:'D′',t:D2}],
+    sol:{polys:[[B2,C2,D2]],arrows:[{a:B,b:B2,c:'sol',dash:1},{a:C,b:C2,c:'sol',dash:1},{a:D,b:D2,c:'sol',dash:1}]},
+    hint:`Chaque sommet doit faire exactement le même déplacement que de ${P('A')} vers ${P('A′')}. Les points en vert sont bien placés, corrige ceux en rouge.`,
+    explain:`Chaque sommet fait le même déplacement que de ${P('A')} vers ${P('A′')} : ${mw(u)}. L'image d'un triangle par une translation est un triangle de même forme, simplement « glissé ».`};
+};
+
+function classify(w,u){if(eq(w,u))return'egal';if(eq(w,neg(u)))return'oppose';if(cross(w,u)===0)return dot(w,u)>0?'sens':'inverse';return'autre'}
+const CLS_TXT={egal:`représentant de ${V('u')} : même direction, même sens, même longueur`,oppose:`représentant de −${V('u')} : même direction, même longueur, mais sens contraire`,sens:'même direction et même sens, mais longueur différente',inverse:'même direction, mais sens contraire et longueur différente',autre:'direction différente'};
+function randAny(R){for(;;){const v=[R.int(-3,3),R.int(-4,4)];if(Math.abs(v[0])+Math.abs(v[1])>=2)return v}}
+function tapGen(R,L,mode){
+  const u=vecL(R,L,3);
+  const good=mode==='egal'?u:neg(u),trap=mode==='egal'?neg(u):u;
+  const fits=w=>Math.abs(w[0])<=3&&Math.abs(w[1])<=4&&(w[0]||w[1]);
+  let Ls=[];const k=R.int(1,3);for(let i=0;i<k;i++)Ls.push(good);Ls.push(trap);
+  if(L>=2){const g=gcd(Math.abs(u[0]),Math.abs(u[1]));let d=g>1?[u[0]/g,u[1]/g]:mul(u,2);if(R.rnd()<.5)d=neg(d);if(fits(d))Ls.push(d)}
+  if(L>=3){const near=add(good,R.pick([[1,0],[-1,0],[0,1],[0,-1]]));if(fits(near)&&classify(near,u)==='autre')Ls.push(near)}
+  const rot=[-u[1],u[0]];if(Ls.length<6&&fits(rot))Ls.push(rot);
+  let guard=0;while(Ls.length<6&&guard++<200){const w=randAny(R);if(classify(w,u)==='autre')Ls.push(w)}
+  if(Ls.length<6)return null;
+  Ls=R.shuffle(Ls.slice(0,6));
+  const taps=Ls.map((w,i)=>{const col=i%3,row=Math.floor(i/3),x0=6+4*col,y0=row?7:1;
+    const s=[sp(w[0],x0,x0+3,R),sp(w[1],y0,y0+4,R)];
+    const kind=classify(w,u);return{a:s,b:add(s,w),id:i+1,kind,correct:kind===mode}});
+  const S=[sp(u[0],1,4,R),sp(u[1],3,9,R)];
+  const nGood=taps.filter(t=>t.correct).length;
+  const tgt=mode==='egal'?V('u'):'−'+V('u');
+  const list=taps.map(t=>`<li>n°${t.id} : ${t.correct?CLS_TXT[t.kind]+' ✓':'pas un représentant de '+tgt+' : '+(t.kind==='oppose'?`même direction et même longueur, mais sens contraire (c’est un représentant de −${V('u')})`:t.kind==='egal'?`même sens que ${V('u')} (c’est un représentant de ${V('u')})`:CLS_TXT[t.kind])}</li>`).join('');
+  const def=mode==='egal'?`Une flèche est un représentant de ${V('u')} si elle a la même direction, le même sens et la même longueur que ${V('u')}. Tous ces représentants sont des vecteurs égaux.`
+    :`Une flèche est un représentant de −${V('u')} si elle a la même direction et la même longueur que ${V('u')}, mais le sens contraire. Ce sont des représentants du vecteur opposé à ${V('u')}.`;
+  return{notion:mode==='egal'?'egaux':'oppose',type:'tap',sep:5,
+    prompt:`Touche toutes les flèches qui sont des représentants du vecteur ${tgt}, puis valide.<span class="hint">Il peut y en avoir plusieurs. Touche à nouveau une flèche pour la désélectionner.</span>`,
+    fixed:{arrows:[{a:S,b:add(S,u),c:'u',label:'u',w:.1}]},taps,
+    hint:`Une flèche est un représentant de ${tgt} si elle a ${mode==='egal'?`la même direction, le même sens et la même longueur que ${V('u')}`:`la même direction et la même longueur que ${V('u')}, mais le sens contraire`}. Vérifie ces trois critères pour chaque flèche (compte les carreaux). Il y a ${nGood} représentant${nGood>1?'s':''} à trouver.`,
+    explain:`${def}<ul>${list}</ul>`};
+}
+G.egaux_tap=(R,L)=>tapGen(R,L,'egal');
+G.oppose_tap=(R,L)=>tapGen(R,L,'oppose');
+
+G.egaux_point=(R,L)=>{
+  const v1=vecL(R,L===1?1:2),v2=vecL(R,2);if(Math.abs(cross(v1,v2))<3)return null;
+  const A=rp(R),B=add(A,v1),D=add(A,v2),C=add(B,v2);
+  if(![B,C,D].every(p=>inB(p))||!farEnough([A,B,C,D],2))return null;
+  const pts={A,B,C,D},names=['A','B','C','D'];
+  const sides=['AB','BC','CD','DA','BA','CB','DC','AD'];
+  const X=R.pick(names);let YZ;
+  if(L===1)YZ=R.pick(sides);else{const y=R.pick(names),z=R.pick(names);if(y===z)return null;YZ=y+z}
+  const Y=YZ[0],Z=YZ[1];
+  const f=L>=3&&R.rnd()<.75?2:1,d=sub(pts[Z],pts[Y]),E=f===1?add(pts[X],d):sub(pts[X],d);
+  if(!inB(E)||names.some(n=>dist(pts[n],E)<1))return null;
+  const En=R.pick(['E','F','G','H']);
+  const lhs=f===1?V(X+En):V(En+X);
+  const ex=f===1?`On part de ${P(X)} et on fait le même déplacement que de ${P(Y)} vers ${P(Z)} : ${mw(d)}.`
+    :`La flèche ${V(En+X)} arrive en ${P(X)}. On part donc de ${P(X)} et on fait le déplacement inverse, de ${P(Z)} vers ${P(Y)} : ${mw(neg(d))}.`;
+  return{notion:'egaux',type:'point',
+    prompt:`${P('ABCD')} est un parallélogramme. Place le point ${P(En)} tel que ${lhs} = ${V(Y+Z)}.`,
+    fixed:{polys:[{pts:[A,B,C,D]}],points:names.map(n=>({p:pts[n],n}))},
+    movables:[{n:En,t:E}],
+    sol:{arrows:[{a:pts[Y],b:pts[Z],c:'sol',dash:1},f===1?{a:pts[X],b:E,c:'sol'}:{a:E,b:pts[X],c:'sol'}]},
+    hint:f===1?`${lhs} commence en ${P(X)}. Regarde le déplacement de ${P(Y)} vers ${P(Z)} et refais-le à partir de ${P(X)}.`
+      :`Attention : dans ${lhs}, c'est ${P(En)} le point de départ et la flèche arrive en ${P(X)}. Il faut donc remonter la flèche.`,
+    explain:`${lhs} = ${V(Y+Z)} : les deux flèches ont même direction, même sens et même longueur. ${ex}`};
+};
+
+G.parallelo=(R,L)=>{
+  const v1=vecL(R,2),v2=vecL(R,L>=3?3:2);if(Math.abs(cross(v1,v2))<3)return null;
+  const A=rp(R),variant=L>=3&&R.rnd()<.7?'ABDC':'ABCD';
+  let B,C,D,segs,ex,solArrows,hint;
+  if(variant==='ABCD'){B=add(A,v1);C=add(B,v2);D=add(A,v2);segs=[[A,B],[B,C]];
+    ex=`${P('ABCD')} est un parallélogramme quand ${V('AD')} = ${V('BC')}. On part de ${P('A')} et on reproduit le déplacement de ${P('B')} vers ${P('C')} : ${mw(v2)}.`;
+    hint=`Dans ${P('ABCD')}, le côté [${P('AD')}] est parallèle à [${P('BC')}] et de même longueur. Quelle égalité de vecteurs peux-tu écrire ?`;
+    solArrows=[{a:B,b:C,c:'sol',dash:1},{a:A,b:D,c:'sol'}];}
+  else{B=add(A,v1);C=add(A,v2);D=add(B,v2);segs=[[A,B],[A,C]];
+    ex=`D'après la propriété du cours, ${P('ABDC')} est un parallélogramme quand ${V('AB')} = ${V('CD')}. On part de ${P('C')} et on reproduit le déplacement de ${P('A')} vers ${P('B')} : ${mw(v1)}.`;
+    hint=`Propriété du cours : ${V('AB')} = ${V('CD')} revient à dire que ${P('ABDC')} est un parallélogramme. Attention à l'ordre des lettres : ${P('D')} n'est pas en face de ${P('B')}.`;
+    solArrows=[{a:A,b:B,c:'sol',dash:1},{a:C,b:D,c:'sol'}];}
+  if(![B,C,D].every(p=>inB(p))||!farEnough([A,B,C,D],2))return null;
+  const order=variant==='ABCD'?[A,B,C,D]:[A,B,D,C];
+  return{notion:'egaux',type:'point',
+    prompt:`Place le point ${P('D')} pour que ${P(variant)} soit un parallélogramme.<span class="hint">On tourne dans l'ordre des lettres : ${variant.split('').join(' → ')}.</span>`,
+    fixed:{segs,points:[{p:A,n:'A'},{p:B,n:'B'},{p:C,n:'C'}]},
+    movables:[{n:'D',t:D}],
+    sol:{polys:[order],arrows:solArrows},hint,explain:ex};
+};
+
+G.milieu=(R,L)=>{
+  if(L<3||R.rnd()<.4){
+    const v=vecL(R,L),A=rp(R),B=add(A,v),C=add(B,v);
+    if(!inB(B)||!inB(C))return null;
+    return{notion:'milieu',type:'point',
+      prompt:`Place le point ${P('C')} tel que ${P('B')} soit le milieu du segment [${P('AC')}].`,
+      fixed:{points:[{p:A,n:'A'},{p:B,n:'B'}]},movables:[{n:'C',t:C}],
+      sol:{arrows:[{a:A,b:B,c:'sol',dash:1},{a:B,b:C,c:'sol'}]},
+      hint:`Si ${P('B')} est le milieu de [${P('AC')}], alors ${V('AB')} = ${V('BC')} : le déplacement de ${P('B')} vers ${P('C')} est le même que de ${P('A')} vers ${P('B')}.`,
+      explain:`${P('B')} est le milieu de [${P('AC')}] quand ${V('AB')} = ${V('BC')}. On part de ${P('B')} et on refait le déplacement de ${P('A')} vers ${P('B')} : ${mw(v)}.`};
+  }
+  const h=vecL(R,2),A=rp(R),I=add(A,h),C=add(I,h);
+  if(!inB(I)||!inB(C))return null;
+  return{notion:'milieu',type:'point',
+    prompt:`Place le point ${P('I')}, milieu du segment [${P('AC')}].`,
+    fixed:{segs:[[A,C]],points:[{p:A,n:'A'},{p:C,n:'C'}]},movables:[{n:'I',t:I}],
+    sol:{arrows:[{a:A,b:I,c:'sol'},{a:I,b:C,c:'sol',dash:1}]},
+    hint:`Compte le déplacement de ${P('A')} vers ${P('C')} (horizontalement et verticalement), puis fais-en exactement la moitié.`,
+    explain:`${P('I')} est le milieu de [${P('AC')}] quand ${V('AI')} = ${V('IC')}. Pour aller de ${P('A')} à ${P('C')} : ${mw(mul(h,2))}. On en fait la moitié : ${mw(h)}.`};
+};
+
+const dataArrow=(R,u,y0,y1)=>[sp(u[0],1,5,R),sp(u[1],y0,y1,R)];
+
+G.oppose_draw=(R,L)=>{
+  const u=vecL(R,L),S=dataArrow(R,u,1,11),Pp=rp(R,CBOX),T=sub(Pp,u);
+  if(!inB(T,CBOX))return null;
+  return{notion:'oppose',type:'arrow',sep:6,
+    prompt:`Trace, à partir du point ${P('P')}, un représentant du vecteur −${V('u')}.<span class="hint">Pose le doigt sur ${P('P')} et fais glisser jusqu'à l'extrémité de la flèche.</span>`,
+    fixed:{arrows:[{a:S,b:add(S,u),c:'u',label:'u'}],points:[{p:Pp,n:'P'}]},
+    movables:[{from:Pp,t:T,c:'w',label:'−u'}],
+    sol:{arrows:[{a:Pp,b:T,c:'sol',dash:1}]},
+    hint:`−${V('u')} a la même direction et la même longueur que ${V('u')}, mais il pointe dans l'autre sens.`,
+    explain:`−${V('u')} a la même direction et la même longueur que ${V('u')}, mais le sens contraire. Depuis ${P('P')} : ${mw(neg(u))}.`};
+};
+
+function sumGen(R,L,minus){
+  let u,v;
+  if(L<=1){u=vecL(R,1,3);const k=R.int(2,3)*(R.rnd()<.5?1:-1);v=u[0]?[0,k]:[k,0]}
+  else{u=vecL(R,L,3);v=vecL(R,L,3)}
+  if(cross(u,v)===0)return null;
+  const vv=minus?neg(v):v,w=add(u,vv);if(Math.abs(w[0])+Math.abs(w[1])<2)return null;
+  const Su=dataArrow(R,u,1,5),Sv=dataArrow(R,v,7,11);
+  const Pp=rp(R,CBOX),P1=add(Pp,u),P2=add(P1,vv);
+  if(!inB(P1,CBOX)||!inB(P2,CBOX))return null;
+  const lab=minus?'u−v':'u+v',html=minus?`${V('u')} − ${V('v')}`:`${V('u')} + ${V('v')}`;
+  return{notion:minus?'diff':'somme',type:'arrow',sep:6,
+    prompt:`Trace, à partir du point ${P('P')}, un représentant du vecteur ${html}.<span class="hint">Pose le doigt sur ${P('P')} et fais glisser jusqu'à l'extrémité de la flèche.</span>`,
+    fixed:{arrows:[{a:Su,b:add(Su,u),c:'u',label:'u'},{a:Sv,b:add(Sv,v),c:'v',label:'v'}],points:[{p:Pp,n:'P'}]},
+    movables:[{from:Pp,t:P2,c:'w',label:lab}],
+    sol:{arrows:[{a:Pp,b:P1,c:'u',dash:1},{a:P1,b:P2,c:'v',dash:1,label:minus?'−v':null,side:-1},{a:Pp,b:P2,c:'sol'}]},
+    hint:minus?`${V('u')} − ${V('v')} = ${V('u')} + (−${V('v')}). Imagine ${V('u')} depuis ${P('P')}, puis la flèche ${V('v')} retournée au bout de ${V('u')}.`
+      :`Imagine ${V('u')} tracé depuis ${P('P')}, puis ${V('v')} tracé au bout de ${V('u')} (bout à bout). La somme relie ${P('P')} à l'arrivée.`,
+    explain:minus?`${V('u')} − ${V('v')} = ${V('u')} + (−${V('v')}) : on construit ${V('u')} à partir de ${P('P')}, puis −${V('v')} (même direction et longueur que ${V('v')}, sens contraire) au bout de ${V('u')}. Au total : ${mw(w)}.`
+      :`On construit ${V('u')} à partir de ${P('P')}, puis ${V('v')} au bout de ${V('u')}. La somme va du départ de la première flèche à l'arrivée de la seconde : ${mw(w)}.`};
+}
+G.somme_draw=(R,L)=>sumGen(R,L,false);
+G.diff_draw=(R,L)=>sumGen(R,L,true);
+
+G.chasles=(R,L)=>{
+  const pool=R.shuffle(['A','B','C','K','M','N','O','P','R','S','T']);
+  const k=L<=1?2:L===2?R.pick([2,3]):3;
+  const loop=L>=2&&R.rnd()<(L===2?.15:.25);
+  const Q=pool.slice(0,k+1);if(loop)Q[k]=Q[0];
+  let terms=[];for(let i=0;i<k;i++)terms.push({p:Q[i],q:Q[i+1],neg:false});
+  if(L>=3&&R.rnd()<.6)terms[R.int(0,k-1)].neg=true;
+  const path=terms.slice();
+  if(L>=2)terms=R.shuffle(terms);
+  if(terms[0].neg){const j=terms.findIndex(t=>!t.neg);[terms[0],terms[j]]=[terms[j],terms[0]]}
+  const expr=terms.map((t,i)=>(i?(t.neg?' − ':' + '):'')+(t.neg?V(t.q+t.p):V(t.p+t.q))).join('');
+  const ans=loop?'0':Q[0]+Q[k];
+  const opts=new Set([ans]);if(!loop){opts.add(Q[k]+Q[0]);opts.add('0')}
+  const letters=[...new Set(Q),pool[k+1]];
+  let guard=0;while(opts.size<4&&guard++<100){const a=R.pick(letters),b=R.pick(letters);if(a!==b)opts.add(a+b)}
+  if(opts.size<4)return null;
+  const options=R.shuffle([...opts]).map(o=>({html:o==='0'?ZERO:V(o),correct:o===ans}));
+  const negs=path.filter(t=>t.neg);
+  const pre=negs.length?`D'abord, −${V(negs[0].q+negs[0].p)} = ${V(negs[0].p+negs[0].q)} (vecteurs opposés). `:'';
+  const chain=path.map(t=>V(t.p+t.q)).join(' + ');
+  return{notion:'somme',type:'choice',
+    prompt:`Simplifie l'écriture : ${expr}`,options,
+    hint:(negs.length?`Commence par transformer le vecteur précédé d'un signe − : −${V('XY')} = ${V('YX')}. `:'')+`Cherche deux vecteurs où la lettre d'arrivée de l'un est la lettre de départ de l'autre, comme dans ${V('AB')} + ${V('BC')} = ${V('AC')}.`,
+    explain:`${pre}On range les vecteurs pour que les lettres s'enchaînent, puis on applique la relation de Chasles : ${chain} = ${loop?`${V(Q[0]+Q[0])} = ${ZERO}`:V(ans)}.${loop?' On revient au point de départ : c\'est le vecteur nul.':''}`};
+};
+
+G.somme_point=(R,L)=>{
+  const A=rp(R),B=add(A,vecL(R,3)),C=add(A,vecL(R,3));
+  if(!inB(B)||!inB(C)||Math.abs(cross(sub(B,A),sub(C,A)))<4||!farEnough([A,B,C],2.5))return null;
+  const pts={A,B,C},n=['A','B','C'];
+  const pairs=[];n.forEach(a=>n.forEach(b=>{if(a!==b)pairs.push(a+b)}));
+  const X=R.pick(n),p1=R.pick(pairs),p2=R.pick(pairs);if(p1===p2||p1===p2[1]+p2[0])return null;
+  const d1=sub(pts[p1[1]],pts[p1[0]]),d2=sub(pts[p2[1]],pts[p2[0]]),M1=add(pts[X],d1),F=add(M1,d2);
+  if(!inB(F)||eq(F,pts[X])||n.some(k=>dist(pts[k],F)<1))return null;
+  const ch=p1[1]===p2[0]?` Ici, avec la relation de Chasles, ${V(p1)} + ${V(p2)} = ${V(p1[0]+p2[1])}.`:'';
+  return{notion:'somme',type:'point',
+    prompt:`${P('ABC')} est un triangle. Place le point ${P('F')} tel que ${V(X+'F')} = ${V(p1)} + ${V(p2)}.`,
+    fixed:{polys:[{pts:[A,B,C]}],points:n.map(k=>({p:pts[k],n:k}))},
+    movables:[{n:'F',t:F}],
+    sol:{arrows:[{a:pts[X],b:M1,c:'u',dash:1},{a:M1,b:F,c:'v',dash:1},{a:pts[X],b:F,c:'sol'}]},
+    hint:`Pars de ${P(X)}, reproduis le déplacement de ${V(p1)}, puis celui de ${V(p2)} au bout du premier.`,
+    explain:`On part de ${P(X)}, on reproduit ${V(p1)} (${mw(d1)}), puis ${V(p2)} au bout (${mw(d2)}).${ch}`};
+};
+
+G.parallelo_somme=(R,L)=>{
+  const v1=vecL(R,2),v2=vecL(R,L>=3?3:2);if(Math.abs(cross(v1,v2))<3)return null;
+  const A=rp(R),B=add(A,v1),D=add(A,v2),C=add(B,v2);
+  if(![B,C,D].every(p=>inB(p))||!farEnough([A,B,C,D],2))return null;
+  return{notion:'somme',type:'point',
+    prompt:`Place le point ${P('C')} tel que ${V('AC')} = ${V('AB')} + ${V('AD')}.`,
+    fixed:{arrows:[{a:A,b:B,c:'u'},{a:A,b:D,c:'v'}],points:[{p:A,n:'A'},{p:B,n:'B'},{p:D,n:'D'}]},
+    movables:[{n:'C',t:C}],
+    sol:{polys:[[A,B,C,D]],arrows:[{a:B,b:C,c:'v',dash:1},{a:A,b:C,c:'sol'}]},
+    hint:`Pense à la propriété caractéristique du parallélogramme : ${V('AC')} = ${V('AB')} + ${V('AD')} revient à dire que ${P('ABCD')} est un parallélogramme.`,
+    explain:`Propriété caractéristique : ${V('AC')} = ${V('AB')} + ${V('AD')} quand ${P('ABCD')} est un parallélogramme. ${P('C')} est le quatrième sommet : on part de ${P('B')} et on reproduit ${V('AD')} (${mw(v2)}).`};
+};
+
+function make(name,R,L){for(let t=0;t<800;t++){const ex=G[name](R,L);if(ex){ex.gen=name;ex.level=L;return ex}}throw new Error('génération impossible : '+name)}
+
+/* ---------- notions et progression ---------- */
+const NOTIONS=[
+  {id:'trans',name:'Translation',desc:'Image d’un point, d’un triangle',plan:{1:['trans_point'],2:['trans_point','trans_fig'],3:['trans_fig','trans_point']},
+   rappel:`<p>Une translation fait glisser une figure selon une direction, un sens et une longueur, représentés par une flèche : le <b>vecteur</b>.</p><p>${P('M′')} est l'image de ${P('M')} par la translation de vecteur ${V('AB')} : on passe de ${P('M')} à ${P('M′')} par le même déplacement que de ${P('A')} à ${P('B')}.</p>`},
+  {id:'egaux',name:'Vecteurs égaux',desc:'Reconnaître, construire, parallélogramme',plan:{1:['egaux_tap','egaux_point'],2:['egaux_tap','egaux_point','parallelo'],3:['egaux_point','parallelo','egaux_tap']},
+   rappel:`<p>Des vecteurs sont <b>égaux</b> lorsqu'ils ont même direction, même sens et même longueur (la longueur s'appelle la <b>norme</b>). Toutes ces flèches sont des <b>représentants</b> d'un même vecteur.</p><p>${V('AB')} = ${V('CD')} revient à dire que ${P('ABDC')} est un parallélogramme, éventuellement aplati.</p>`},
+  {id:'milieu',name:'Milieu',desc:'Propriété du milieu',plan:{1:['milieu'],2:['milieu'],3:['milieu']},
+   rappel:`<p>${P('B')} est le milieu du segment [${P('AC')}] revient à dire que ${V('AB')} = ${V('BC')}.</p>`},
+  {id:'oppose',name:'Vecteurs opposés',desc:`Reconnaître, tracer −${V('u')}`,plan:{1:['oppose_tap','oppose_draw'],2:['oppose_tap','oppose_draw'],3:['oppose_draw','oppose_tap']},
+   rappel:`<p>Deux vecteurs sont <b>opposés</b> lorsqu'ils ont la même direction, la même longueur et des sens contraires : ${V('BA')} = −${V('AB')}.</p><p>Vecteur nul : ${V('MM')} = ${ZERO}.</p>`},
+  {id:'somme',name:'Somme et Chasles',desc:'Bout à bout, Chasles, parallélogramme',plan:{1:['somme_draw','chasles'],2:['somme_draw','chasles','parallelo_somme'],3:['chasles','somme_point','somme_draw']},
+   rappel:`<p>Relation de Chasles : ${V('AB')} + ${V('BC')} = ${V('AC')}. Pour additionner deux vecteurs, on les place <b>bout à bout</b>.</p><p>${P('ABCD')} est un parallélogramme revient à dire que ${V('AC')} = ${V('AB')} + ${V('AD')}.</p>`},
+  {id:'diff',name:'Différence',desc:`Tracer ${V('u')} − ${V('v')}`,plan:{1:['diff_draw'],2:['diff_draw'],3:['diff_draw']},
+   rappel:`<p>${V('u')} − ${V('v')} = ${V('u')} + (−${V('v')}) : on construit ${V('u')} puis −${V('v')} bout à bout.</p>`},
+];
+/* Formulaire choisi automatiquement : une seule notion cochée → son formulaire, sinon « Tout le chapitre » (n° 1). */
+const NOTION_FORM={trans:2,egaux:3,milieu:4,oppose:5,somme:6,diff:7};
+function autoForm(c){const ns=NOTIONS.filter((_,i)=>c.mask>>i&1);const f=ns.length===1?NOTION_FORM[ns[0].id]:1;if(f<=FORMS.length)c.f=f}
+const MIX={id:'mix',name:'Tout le chapitre',desc:'Toutes les notions mélangées',mix:true};
+const WEAK={id:'weak',name:'Mes points faibles',desc:'Les types d’exercices qui t’ont posé problème',weak:true};
+const notionById=id=>id==='mix'?MIX:id==='weak'?WEAK:NOTIONS.find(n=>n.id===id);
+/* Mémoire des points faibles sur cet appareil : par type d'exercice, +2 si raté, +1 si réussi au 2e essai, −2 si réussi du premier coup (0 à 6). */
+const weakGet=()=>store.get('vec2de.weak',{});
+function updWeak(g,res){const w=weakGet();let v=(w[g]||0)+(res==='ko'?2:res==='ok2'?1:-2);v=Math.max(0,Math.min(6,v));if(v)w[g]=v;else delete w[g];store.set('vec2de.weak',w)}
+/* Points forts : un type d'exercice réussi du premier coup 3 fois de suite (et qui n'est pas un point faible). */
+const mastGet=()=>store.get('vec2de.mast',{});
+const strongX=x=>!!x&&x.st>=3;
+function updMast(g,res){const m=mastGet(),x=m[g]||{n:0,ok1:0,st:0},was=strongX(x);x.n++;if(res==='ok1'){x.ok1++;x.st++}else x.st=0;m[g]=x;store.set('vec2de.mast',m);return{was,now:strongX(x)}}
+const strongList=()=>{const m=mastGet(),w=weakGet();return Object.keys(m).filter(g=>strongX(m[g])&&!w[g]&&GEN_NAMES[g]).sort((a,b)=>m[b].ok1-m[a].ok1)};
+const weakList=()=>Object.entries(weakGet()).sort((a,b)=>b[1]-a[1]).map(([g])=>g).filter(g=>GEN_NAMES[g]);
+/* Défis : le code (6 caractères) contient les réglages (notions, nombre de questions, difficulté, formulaire) et une graine aléatoire. */
+const NMIN=3,NMAX=30;
+const DIFFS=['Niveau 1','Niveau 2','Niveau 3','Progressif'];
+const DIFF_HELP=['Vecteurs horizontaux ou verticaux, cas directs.','Vecteurs obliques, cas courants.','Pour aller plus loin : égalités « à l’envers », parallélogramme ABDC, Chasles avec un signe −.','Commence au niveau 1 et monte jusqu’au niveau 3 au fil des questions.'];
+const CFG_N=63*(NMAX-NMIN+1)*4*9,SEEDS=Math.floor(31**6/CFG_N);
+const DEFAULT_CFG={mask:63,n:10,di:3,f:0};
+/* Empreinte du mot de passe de l'Espace professeur */
+const PROF_PW='3af6f7c0ed1246d5';
+function pickGen(notion,L,last){
+  const n=notion.mix?NOTIONS[Math.floor(Math.random()*NOTIONS.length)]:notion;
+  const list=n.plan[L];let g,t=0;do{g=list[Math.floor(Math.random()*list.length)]}while(list.length>1&&g===last&&t++<10);return g;
+}
+const GEN_NAMES={trans_point:'Image d’un point par une translation',trans_fig:'Image d’un triangle par une translation',egaux_tap:'Reconnaître les représentants d’un vecteur',
+  egaux_point:'Construire un point avec une égalité de vecteurs',parallelo:'Compléter un parallélogramme',milieu:'Milieu d’un segment',oppose_tap:'Reconnaître les représentants du vecteur opposé',
+  oppose_draw:'Tracer l’opposé d’un vecteur',somme_draw:'Tracer une somme de vecteurs',chasles:'Simplifier avec la relation de Chasles',somme_point:'Construire un point avec une somme',
+  parallelo_somme:'Somme et parallélogramme',diff_draw:'Tracer une différence de vecteurs'};
+const notionOfGen=g=>NOTIONS.find(n=>Object.values(n.plan).some(l=>l.includes(g)));
+function wpick(items,w){const t=w.reduce((a,b)=>a+b,0);let r=Math.random()*t;for(let i=0;i<items.length;i++){r-=w[i];if(r<0)return items[i]}return items[items.length-1]}
+/* Série adaptative : choisit le prochain exercice selon les erreurs déjà faites dans la série. */
+function adaptNext(se){
+  const prev=se.results[se.k-1],last=se.hist[se.k-1];
+  if(last){const g=last.g;
+    if(prev!=='ok1')se.here[g]=1;
+    if(prev==='ko'){se.err[g]=(se.err[g]||0)+2;se.adj=Math.max(-2,se.adj-1);se.streak=0}
+    else if(prev==='ok2'){se.err[g]=(se.err[g]||0)+1;se.streak=0}
+    else{se.streak++;if(se.err[g])se.err[g]=Math.max(0,se.err[g]-1);if(se.streak>=2&&se.adj<0){se.adj++;se.streak=0}}
+    se.fix[g]=se.fix[g]||0;
+    // Rattrapage : après une erreur, même type d'exercice, un niveau plus simple (2 fois au plus par type)
+    if(prev==='ko'&&se.fix[g]<2){se.fix[g]++;return{g,L:Math.max(1,last.L-1),why:'rattrapage',ref:se.k}}
+    // Consolidation : réussi au 2e essai → le même type, même niveau (une fois)
+    if(prev==='ok2'&&last.why!=='consolidation'&&last.why!=='rattrapage')return{g,L:last.L,why:'consolidation',ref:se.k}
+    // Après un rattrapage réussi, on vérifie au niveau d'origine
+    if(last.why==='rattrapage'&&prev==='ok1'&&last.L<(se.hist[last.ref-1]||{}).L)return{g,L:se.hist[last.ref-1].L,why:'verification',ref:last.ref}
+  }
+  const L=Math.max(1,Math.min(3,levelFor(se.k,se.N)+se.adj));
+  let notion=S.notion;
+  const e=g=>Math.min(3,se.err[g]||0),h1=se.hist[se.k-1],h2=se.hist[se.k-2],twice=g=>h1&&h2&&h1.g===g&&h2.g===g;
+  if(notion.weak){const wk=weakList(),all=[...new Set(NOTIONS.flatMap(n=>n.plan[L]))],list=wk.length?wk:all;
+    const w=list.map(g=>twice(g)&&list.length>1?.05:(1+2*e(g))*(g===se.lastGen&&list.length>1?.3:1));const g=wpick(list,w);
+    return{g,L,why:se.prior[g]&&!se.here[g]?'memoire':(e(g)&&!twice(g)?'cible':null)}}
+  if(notion.mix){const ws=NOTIONS.map(n=>1+Math.min(4,Object.keys(se.err).filter(g=>notionOfGen(g)===n&&!twice(g)).reduce((a,g)=>a+e(g),0)));notion=wpick(NOTIONS,ws)}
+  const list=notion.plan[L],w=list.map(g=>twice(g)&&list.length>1?.05:(1+2*e(g))*(g===se.lastGen&&!e(g)&&list.length>1?.15:1));
+  const g=wpick(list,w);return{g,L,why:e(g)&&!twice(g)?(se.prior[g]&&!se.here[g]?'memoire':'cible'):null};
+}
+function levelFor(k,N,prev){let L=1+Math.floor(3*k/N);if(L>3)L=3;if(prev==='ko')L=Math.max(1,L-1);return L}
+
+/* ---------- dessin SVG ---------- */
+function vecLabel(cx,cy,txt,c){
+  const toks=[...txt],wl=.36,wo=.42,W=toks.reduce((s,t)=>s+(/[a-z]/.test(t)?wl:wo),0);
+  let x=cx-W/2,s=`<g style="color:var(--${c})">`;
+  toks.forEach(t=>{const w=/[a-z]/.test(t)?wl:wo,mx=x+w/2;
+    s+=`<text x="${mx}" y="${cy+.2}" text-anchor="middle" class="pl" fill="currentColor">${t}</text>`;
+    if(/[a-z]/.test(t)){const y=cy-.3,x1=x+.05,x2=x+w-.03;s+=`<path d="M${x1} ${y}H${x2}M${x2-.1} ${y-.08}L${x2} ${y}L${x2-.1} ${y+.08}" stroke="currentColor" stroke-width=".045" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`}
+    x+=w});
+  return s+'</g>';
+}
+function arrowSVG(a,b,c,o={}){
+  const dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy);if(L<1e-6)return'';
+  const ux=dx/L,uy=dy/L,hl=Math.min(.46,L*.45),hw=hl*.5,w=o.w||.08;
+  const bx=b[0]-ux*hl,by=b[1]-uy*hl;
+  let s=`<g style="color:var(--${c})"><line x1="${a[0]}" y1="${a[1]}" x2="${bx}" y2="${by}" stroke="currentColor" stroke-width="${w}" stroke-linecap="round"${o.dash?' stroke-dasharray=".22 .15"':''}/>`;
+  s+=`<polygon points="${b[0]},${b[1]} ${bx-uy*hw},${by+ux*hw} ${bx+uy*hw},${by-ux*hw}" fill="currentColor"/></g>`;
+  if(o.label){const nx=-uy,ny=ux,side=o.side||1;s+=vecLabel((a[0]+b[0])/2+nx*.62*side,(a[1]+b[1])/2+ny*.62*side,o.label,c)}
+  return s;
+}
+function crossSVG(p,name,c='ink'){
+  const r=.17,[x,y]=p;
+  return`<g style="color:var(--${c})"><path d="M${x-r} ${y-r}L${x+r} ${y+r}M${x-r} ${y+r}L${x+r} ${y-r}" stroke="currentColor" stroke-width=".06" stroke-linecap="round"/>${name?`<text x="${x+.26}" y="${y-.26}" class="pl" fill="currentColor">${name}</text>`:''}</g>`;
+}
+function handleSVG(p,name,verdict,dim){
+  const c=verdict===true?'ok':verdict===false?'bad':'accent',[x,y]=p;
+  return`<g style="color:var(--${c})"><circle cx="${x}" cy="${y}" r=".42" fill="currentColor" fill-opacity="${dim?.08:.2}" stroke="currentColor" stroke-width=".07"${dim?' stroke-dasharray=".14 .1"':''}/><circle cx="${x}" cy="${y}" r=".08" fill="currentColor"/>${name?`<text x="${x+.5}" y="${y-.42}" class="pl" fill="currentColor">${name}</text>`:''}</g>`;
+}
+/* opt.sol : correction ; opt.verdict : couleurs juste/faux ; opt.marks : indice du 2e essai (points bien ou mal placés) */
+function boardSVG(ex,st,opt={}){
+  let s='';
+  for(let x=0;x<=GW;x++)s+=`<line class="gl" x1="${x}" y1="0" x2="${x}" y2="${GH}"/>`;
+  for(let y=0;y<=GH;y++)s+=`<line class="gl" x1="0" y1="${y}" x2="${GW}" y2="${y}"/>`;
+  if(ex.type==='point')s+=`<rect class="dock" x="15.6" y=".6" width="2.8" height="9.1" rx=".35"/><text class="docklbl" x="17" y="9.35" text-anchor="middle">à placer</text>`;
+  if(ex.sep){s+=`<line class="sep" x1="${ex.sep}" y1=".2" x2="${ex.sep}" y2="${GH-.2}"/>`;
+    if(ex.type==='arrow')s+=`<text class="zone" x="${ex.sep+.35}" y="${GH-.3}">CONSTRUCTION</text>`}
+  const F=ex.fixed||{};
+  (F.polys||[]).forEach(pl=>s+=`<polygon class="poly" points="${pl.pts.map(p=>p.join(',')).join(' ')}"/>`);
+  (F.segs||[]).forEach(([a,b])=>s+=`<line class="seg" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`);
+  (F.arrows||[]).forEach(a=>s+=arrowSVG(a.a,a.b,a.c,{label:a.label,dash:a.dash,w:a.w}));
+  if(ex.type==='tap')ex.taps.forEach(t=>{
+    const sel=st.sel.has(t.id);let c='ink',dash=0;
+    if(opt.verdict){c=t.correct?'ok':sel?'bad':'muted';dash=t.correct&&!sel}else if(sel)c='accent';
+    s+=arrowSVG(t.a,t.b,c,{w:sel?.13:.08,dash});
+    const d=sub(t.b,t.a),L=Math.hypot(d[0],d[1]),nx=-d[1]/L,ny=d[0]/L,mx=(t.a[0]+t.b[0])/2-nx*.6,my=(t.a[1]+t.b[1])/2-ny*.6;
+    s+=`<g style="color:var(--${c})"><circle cx="${mx}" cy="${my}" r=".32" fill="${sel?'currentColor':'var(--paper)'}" stroke="currentColor" stroke-width=".05"/><text x="${mx}" y="${my+.15}" text-anchor="middle" font-size=".42" font-weight="700" style="font-family:var(--body);fill:${sel?'var(--paper)':'currentColor'}">${t.id}</text></g>`;
+  });
+  if(opt.sol&&ex.sol){
+    (ex.sol.polys||[]).forEach(pl=>s+=`<polygon class="polysol" points="${pl.map(p=>p.join(',')).join(' ')}"/>`);
+    (ex.sol.arrows||[]).forEach(a=>s+=arrowSVG(a.a,a.b,a.c,{dash:a.dash,label:a.label,side:a.side,w:.07}));
+    if(ex.type==='point')ex.movables.forEach(m=>s+=crossSVG(m.t,m.n,'sol'));
+  }
+  (F.points||[]).forEach(pt=>s+=crossSVG(pt.p,pt.n));
+  const mark=i=>opt.verdict?eq(st.pos[i],ex.movables[i].t):opt.marks?opt.marks[i]:undefined;
+  if(ex.type==='point'){
+    if(ex.imagePoly&&st.pos.every((p,i)=>!eq(p,ex.movables[i].start)))s+=`<polygon class="polyimg" points="${st.pos.map(p=>p.join(',')).join(' ')}"/>`;
+    ex.movables.forEach((m,i)=>s+=handleSVG(st.pos[i],m.n,mark(i)));
+  }else if(ex.type==='arrow'){
+    const m=ex.movables[0],tip=st.pos[0],moved=!eq(tip,m.from),mk=mark(0);
+    if(!moved)s+=handleSVG(tip,null,mk,true);
+    else{const cc=mk===true?'ok':mk===false?'bad':'accent';s+=`<circle cx="${tip[0]}" cy="${tip[1]}" r=".62" style="fill:none;stroke:var(--${cc});stroke-width:.05;stroke-dasharray:.16 .12;opacity:.7"/>`}
+    if(moved)s+=arrowSVG(m.from,tip,mk===true?'ok':mk===false?'bad':m.c,{label:m.label,w:.11});
+  }
+  return s;
+}
+
+/* ---------- état ---------- */
+const S={mode:'train',notion:null,ex:null,pos:[],sel:new Set(),choice:null,banned:new Set(),done:false,tries:0,marks:null,ok:null,series:null,defi:null,drag:null};
+const board=$('#board');
+const screens=['home','notions','setup','defi','lock','ex','bilan','result','prof'];
+function show(id){screens.forEach(s=>$('#s-'+s).hidden=s!==id);document.body.classList.toggle('exmode',id==='ex');window.scrollTo(0,0);if(id==='ex')requestAnimationFrame(fitBoard)}
+document.querySelectorAll('[data-home]').forEach(b=>b.onclick=()=>{stopTimer();show('home')});
+
+(function(){const M=[1,5],M1=[3,1.2],M2=[7.6,4];
+  $('#hero-art').innerHTML=arrowSVG(M,M1,'u',{w:.11,label:'u',side:-1})+arrowSVG(M1,M2,'v',{w:.11,label:'v',side:-1})+arrowSVG(M,M2,'w',{w:.11,label:'w',side:1})+crossSVG(M,'M')+crossSVG(M2,'');})();
+
+/* ---------- entraînement ---------- */
+const stats=()=>store.get('vec2de.stats',{});
+function renderNotions(){
+  const st=stats();
+  const wk=weakList();
+  const weakCard=wk.length?`<button class="notion weakcard" data-n="weak" type="button"><h3>Mes points faibles</h3><span class="small">Une série avec les types d’exercices qui t’ont posé problème :</span><ul class="weaklist">${wk.slice(0,4).map(g=>`<li>${GEN_NAMES[g]}</li>`).join('')}${wk.length>4?`<li>et ${wk.length-4} autre${wk.length>5?'s':''}</li>`:''}</ul></button>`:'';
+  const sl=strongList();
+  const strongCard=sl.length?`<div class="notion strongcard"><h3>★ Mes points forts</h3><span class="small">Réussis du premier coup au moins 3 fois de suite :</span><ul class="weaklist">${sl.slice(0,4).map(g=>`<li>${GEN_NAMES[g]}</li>`).join('')}${sl.length>4?`<li>et ${sl.length-4} autre${sl.length>5?'s':''}</li>`:''}</ul></div>`:'';
+  $('#notion-list').innerHTML=strongCard+weakCard+[...NOTIONS,MIX].map(n=>{const s=st[n.id]||{ok:0,n:0},pc=s.n?Math.round(100*s.ok/s.n):0,nw=n.mix?0:wk.filter(g=>notionOfGen(g)===n).length,ns=n.mix?0:sl.filter(g=>notionOfGen(g)===n).length;
+    return`<button class="notion${n.mix?' mix':''}" data-n="${n.id}" type="button"><h3>${n.name}</h3><span class="muted small">${n.desc}</span><div class="meter"><span style="width:${pc}%"></span></div><small>${s.n?`${s.ok} réussi${s.ok>1?'s':''} sur ${s.n}`:'Pas encore commencé'}</small>${ns?`<small class="strongtag">★ ${ns} point${ns>1?'s':''} fort${ns>1?'s':''}</small>`:''}${nw?`<small class="weaktag">${nw} type${nw>1?'s':''} d’exercice à retravailler</small>`:''}</button>`}).join('');
+  $('#reset-row').hidden=!(wk.length||sl.length||Object.keys(st).length);$('#reset-confirm').hidden=true;
+  document.querySelectorAll('#notion-list [data-n]').forEach(b=>b.onclick=()=>openSetup(b.dataset.n));
+}
+$('#reset-go').onclick=()=>{$('#reset-confirm').hidden=false};
+$('#reset-no').onclick=()=>{$('#reset-confirm').hidden=true};
+$('#reset-yes').onclick=()=>{store.set('vec2de.weak',{});store.set('vec2de.mast',{});store.set('vec2de.stats',{});renderNotions()};
+$('#go-train').onclick=()=>{renderNotions();show('notions')};
+function openSetup(id){
+  S.notion=notionById(id);$('#setup-notion').textContent=S.notion.name;
+  const sl=$('#setup-n');sl.value=store.get('vec2de.trainN',10);paintSetup();
+  show('setup');
+}
+function paintSetup(){const sl=$('#setup-n'),n=+sl.value;$('#setup-nval').textContent=n;sl.style.setProperty('--p',((n-3)/27*100)+'%')}
+$('#setup-n').addEventListener('input',paintSetup);
+$('#setup-go').onclick=()=>{const n=+$('#setup-n').value;store.set('vec2de.trainN',n);startSeries(n)};
+$('#setup-back').onclick=()=>{renderNotions();show('notions')};
+function startSeries(N){
+  S.mode='train';S.series={N,k:0,results:[],lastGen:null,hist:[],err:{},fix:{},adj:0,streak:0,here:{},prior:{},newStrong:[],overcome:[]};
+  const wk=weakGet();for(const g in wk){S.series.err[g]=Math.min(3,Math.ceil(wk[g]/2));S.series.prior[g]=1}$('#ex-rappel-box').hidden=true;$('#ex-rappel').textContent='Rappel du cours';
+  nextTraining();show('ex');
+}
+function nextTraining(){
+  const se=S.series;
+  if(se.k>=se.N)return showBilan();
+  const pick=adaptNext(se);se.lastGen=pick.g;se.hist[se.k]=pick;
+  const ex=make(pick.g,mkR(Math.random()*4294967296),pick.L);ex.why=pick.why;ex.ref=pick.ref;load(ex);
+}
+function showBilan(){
+  const r=S.series.results,c=x=>r.filter(v=>v===x).length,ok1=c('ok1'),ok2=c('ok2'),ko=c('ko'),N=r.length;
+  $('#bilan-notion').textContent=S.notion.name;
+  $('#bilan-ok1').textContent=ok1;$('#bilan-ok2').textContent=ok2;$('#bilan-ko').textContent=ko;
+  $('#bilan-progress').innerHTML=r.map(v=>`<span class="${v}"></span>`).join('');
+  const se=S.series,byG={};se.hist.forEach((x,i)=>{if(!x)return;const b=byG[x.g]=byG[x.g]||{n:0,ko:0,ok2:0,lastOk:false};b.n++;if(r[i]==='ko')b.ko++;if(r[i]==='ok2')b.ok2++;b.lastOk=r[i]!=='ko'});
+  const weak=Object.entries(byG).filter(([,b])=>b.ko||b.ok2).sort((a,b)=>(b[1].ko*2+b[1].ok2)-(a[1].ko*2+a[1].ok2));
+  const wins=Object.entries(byG).map(([g,b])=>[g,b,se.hist.filter((x,i)=>x&&x.g===g&&r[i]==='ok1').length]).filter(([,,n1])=>n1>0).sort((a,b)=>b[2]-a[2]);
+  const wb=$('#bilan-wins'),badge=g=>se.newStrong.includes(g)?'<span class="pill ok">★ Nouveau point fort</span>':se.overcome.includes(g)?'<span class="pill ok">★ Point faible surmonté</span>':'';
+  wb.hidden=!wins.length;
+  if(wins.length)wb.innerHTML=`<h3>Ce que tu as réussi</h3><ul class="focuslist wins">${wins.map(([g,b,n1])=>`<li><span class="row" style="gap:8px"><b>${GEN_NAMES[g]}</b>${badge(g)}</span><span class="muted small">${n1} réussi${n1>1?'s':''} du premier coup sur ${b.n}</span></li>`).join('')}</ul>`;
+  const fb=$('#bilan-focus');fb.hidden=!weak.length;
+  if(weak.length)fb.innerHTML=`<h3>À retravailler</h3><ul class="focuslist">${weak.map(([g,b])=>`<li><b>${GEN_NAMES[g]}</b><span class="muted small">${b.ko?`${b.ko} raté${b.ko>1?'s':''}`:''}${b.ko&&b.ok2?', ':''}${b.ok2?`${b.ok2} au 2e essai`:''} sur ${b.n} · ${b.lastOk?'<span style="color:var(--ok)">réussi à la fin de la série</span>':'<span style="color:var(--bad)">pas encore réussi</span>'}</span></li>`).join('')}</ul>`;
+  const pc=(ok1+ok2)/N;
+  $('#bilan-title').textContent=`Série terminée : ${ok1+ok2} / ${N}`;
+  const nS=S.series.newStrong.length+S.series.overcome.length;
+  $('#bilan-msg').textContent=pc===1&&ok2===0?'Parfait, tout juste du premier coup ! Essaie une série plus longue ou une autre notion.'
+    :pc>=.8?'Très bien ! Refais une série pour viser le sans-faute du premier coup.'
+    :pc>=.5?'C’est en bonne voie. Relis le rappel du cours, puis refais une série.'
+    :'Cette notion demande encore du travail. Relis le cours et recommence avec une série de 5 exercices.';
+  if(nS)$('#bilan-msg').textContent+=` Et tu as gagné ${nS} étoile${nS>1?'s':''} ★ pendant cette série !`;
+  show('bilan');
+}
+$('#bilan-again').onclick=()=>startSeries(S.series.N);
+$('#bilan-other').onclick=()=>{renderNotions();show('notions')};
+
+/* ---------- chargement / rendu ---------- */
+function load(ex){
+  S.ex=ex;S.sel=new Set();S.choice=null;S.banned=new Set();S.done=false;S.ok=null;S.tries=0;S.marks=null;
+  if(ex.movables)ex.movables.forEach((m,i)=>m.start=ex.type==='point'?DOCK[i].slice():m.from.slice());
+  S.pos=ex.movables?ex.movables.map(m=>m.start.slice()):[];
+  $('#ex-feedback').hidden=true;$('#ex-next').hidden=true;$('#ex-validate').hidden=false;$('#ex-reset').disabled=false;$('#quit-confirm').hidden=true;
+  resetView();render();
+}
+function renderInfo(){
+  if(S.mode==='train'){const se=S.series;
+    $('#ex-back').textContent='← Notions';
+    $('#ex-info').innerHTML=`<span class="chip">${S.notion.name}</span><span class="chip">Niveau ${S.ex.level}</span><span class="chip">Exercice ${se.k+1} / ${se.N}</span>`;
+    $('#ex-progress').innerHTML=Array.from({length:se.N},(_,i)=>`<span class="${se.results[i]||(i===se.k?'cur':'')}"></span>`).join('');
+    $('#ex-rappel').hidden=false;}
+  else{$('#ex-back').textContent='Abandonner';
+    $('#ex-info').innerHTML=`<span class="chip">Défi ${fmtCode(S.defi.code)}</span><span class="chip">Question ${S.defi.i+1} / ${S.defi.N}</span><span class="chip timer" id="timer">${fmtClock(S.defi.elapsed())}</span>`;
+    $('#ex-progress').innerHTML=Array.from({length:S.defi.N},(_,i)=>`<span class="${i<S.defi.i?'done':i===S.defi.i?'cur':''}"></span>`).join('');
+    $('#ex-rappel').hidden=true;$('#ex-rappel-box').hidden=true;}
+}
+function render(){
+  const ex=S.ex;renderInfo();
+  const WHY={rattrapage:`Pour t’aider : même type d’exercice que le n°${ex.ref}, en un peu plus simple.`,consolidation:`Pour consolider : encore un exercice de ce type.`,
+    verification:`Tu as réussi le rattrapage : on revient au niveau de l’exercice n°${ex.ref}.`,cible:`Ce type d’exercice t’a posé problème : on le retravaille.`,memoire:`Ce type d’exercice t’a posé problème lors de tes séries précédentes : on le retravaille.`};
+  $('#ex-prompt').innerHTML=(S.mode==='train'&&ex.why?`<span class="why">${WHY[ex.why]}</span>`:'')+ex.prompt;
+  const isChoice=ex.type==='choice';
+  $('#ex-board-wrap').hidden=isChoice;$('#ex-boardnote').hidden=isChoice;$('#ex-zoom').hidden=isChoice;$('#ex-choices').hidden=!isChoice;$('#ex-reset').hidden=isChoice;
+  if(isChoice)renderChoices($('#ex-choices'),ex,S.choice,S.done&&S.mode==='train',!S.done,S.banned);
+  else{drawBoard();requestAnimationFrame(fitBoard)}
+}
+function fitBoard(){
+  const wrap=$('#ex-board-wrap');if(wrap.hidden)return;
+  const W=wrap.clientWidth,H=wrap.clientHeight;if(!W||!H)return;
+  const ratio=19.4/13.4;let w=W,hh=W/ratio;if(hh>H){hh=H;w=H*ratio}
+  board.style.width=Math.floor(w)+'px';board.style.height=Math.floor(hh)+'px';
+}
+if(window.ResizeObserver)new ResizeObserver(()=>fitBoard()).observe($('#ex-board-wrap'));
+window.addEventListener('resize',fitBoard);
+function drawBoard(){board.innerHTML=boardSVG(S.ex,{pos:S.pos,sel:S.sel},{sol:S.done&&S.mode==='train'&&!S.ok,verdict:S.done&&S.mode==='train',marks:S.marks})}
+function renderChoices(el,ex,choice,verdict,live,banned=new Set()){
+  el.innerHTML=ex.options.map((o,i)=>{let c='choice';if(verdict){if(o.correct)c+=' good';else if(i===choice||banned.has(i))c+=' wrong'}else if(banned.has(i))c+=' wrong';else if(i===choice)c+=' sel';
+    return`<button class="${c}" data-c="${i}" type="button"${banned.has(i)&&!verdict?' disabled':''}>${o.html}</button>`}).join('');
+  if(live)el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{S.choice=+b.dataset.c;renderChoices(el,ex,S.choice,false,true,S.banned)});
+}
+
+/* ---------- zoom et déplacement ---------- */
+const BASE={x:-.7,y:-.7,w:19.4,h:13.4};
+let view={...BASE};
+const applyView=()=>board.setAttribute('viewBox',`${view.x} ${view.y} ${view.w} ${view.h}`);
+function resetView(){view={...BASE};applyView();if(typeof ptrs!=='undefined'){ptrs.clear();pinch=null;pan=null;tapCand=null}}
+function setView(scale,ax,ay,fx,fy){
+  scale=Math.max(1,Math.min(3.5,scale));
+  const w=BASE.w/scale,h=BASE.h/scale;
+  let x=ax-fx*w,y=ay-fy*h;
+  x=Math.max(BASE.x,Math.min(BASE.x+BASE.w-w,x));y=Math.max(BASE.y,Math.min(BASE.y+BASE.h-h,y));
+  view={x,y,w,h};applyView();
+}
+const curScale=()=>BASE.w/view.w;
+document.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{
+  const z=b.dataset.z;if(z==='reset')return resetView();
+  setView(curScale()*(z==='in'?1.4:1/1.4),view.x+view.w/2,view.y+view.h/2,.5,.5);
+});
+function svgPt(e,svg){const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const q=p.matrixTransform(svg.getScreenCTM().inverse());return[q.x,q.y]}
+/* Gestes : les doigts passent par les événements tactiles (fiables sur iPad), la souris par les événements pointeur. */
+const ptrs=new Map();let pinch=null,pan=null,tapCand=null,gestureUsed=false;
+function svgAt(x,y){const p=board.createSVGPoint();p.x=x;p.y=y;const q=p.matrixTransform(board.getScreenCTM().inverse());return[q.x,q.y]}
+function startPinch(){
+  const [a,b]=[...ptrs.values()],r=board.getBoundingClientRect();
+  const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+  pinch={d0:Math.hypot(a.x-b.x,a.y-b.y)||1,s0:curScale(),ax:view.x+(mx-r.left)/r.width*view.w,ay:view.y+(my-r.top)/r.height*view.h};
+}
+function gDown(id,x,y){
+  if(!S.ex||S.ex.type==='choice')return;
+  ptrs.set(id,{x,y});
+  if(ptrs.size>=2){S.drag=null;pan=null;tapCand=null;gestureUsed=true;if(ptrs.size===2)startPinch();return}
+  gestureUsed=false;
+  const p=svgAt(x,y);
+  if(!S.done&&S.ex.type==='tap'){
+    let best=null,bd=.6;S.ex.taps.forEach(t=>{const d=segDist(p,t.a,t.b);if(d<bd){bd=d;best=t}});
+    if(best){tapCand={id:best.id,x,y};return}
+  }
+  if(!S.done&&S.ex.type!=='tap'){
+    let best=-1,bd=Math.max(.6,1.1/Math.sqrt(curScale()));S.pos.forEach((q,i)=>{const d=dist(p,q);if(d<bd){bd=d;best=i}});
+    if(best>=0){S.drag={i:best,id};return}
+  }
+  if(curScale()>1.01)pan={id,x,y,vx:view.x,vy:view.y};
+}
+function gMove(id,x,y){
+  if(!ptrs.has(id))return;
+  ptrs.set(id,{x,y});
+  if(pinch&&ptrs.size>=2){
+    const [a,b]=[...ptrs.values()],r=board.getBoundingClientRect(),d=Math.hypot(a.x-b.x,a.y-b.y);
+    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+    setView(pinch.s0*d/pinch.d0,pinch.ax,pinch.ay,(mx-r.left)/r.width,(my-r.top)/r.height);return;
+  }
+  if(S.drag&&id===S.drag.id){
+    const p=svgAt(x,y),q=[Math.max(0,Math.min(GW,Math.round(p[0]))),Math.max(0,Math.min(GH,Math.round(p[1])))];
+    if(!eq(q,S.pos[S.drag.i])){S.pos[S.drag.i]=q;S.marks=null;drawBoard()}
+    return;
+  }
+  if(pan&&id===pan.id){
+    const r=board.getBoundingClientRect(),dx=(x-pan.x)/r.width*view.w,dy=(y-pan.y)/r.height*view.h;
+    view.x=Math.max(BASE.x,Math.min(BASE.x+BASE.w-view.w,pan.vx-dx));view.y=Math.max(BASE.y,Math.min(BASE.y+BASE.h-view.h,pan.vy-dy));applyView();
+  }
+  if(tapCand&&Math.hypot(x-tapCand.x,y-tapCand.y)>14)tapCand=null;
+}
+function gUp(id,cancel){
+  if(!ptrs.has(id))return;
+  ptrs.delete(id);
+  if(tapCand&&!cancel&&!gestureUsed&&!S.done){const tid=tapCand.id;S.sel.has(tid)?S.sel.delete(tid):S.sel.add(tid);drawBoard()}
+  tapCand=null;
+  if(S.drag&&id===S.drag.id)S.drag=null;
+  if(pan&&id===pan.id)pan=null;
+  if(ptrs.size<2)pinch=null;
+  if(ptrs.size===1&&gestureUsed){const [pid,pp]=[...ptrs.entries()][0];if(curScale()>1.01)pan={id:pid,x:pp.x,y:pp.y,vx:view.x,vy:view.y}}
+}
+const T='t';
+/* Retire les doigts « fantômes » dont la fin n'a pas été reçue */
+function syncTouches(e){const live=new Set([...e.touches].map(t=>T+t.identifier));[...ptrs.keys()].forEach(k=>{if(k[0]===T&&!live.has(k))gUp(k,true)})}
+board.addEventListener('touchstart',e=>{e.preventDefault();syncTouches(e);for(const t of e.changedTouches)gDown(T+t.identifier,t.clientX,t.clientY)},{passive:false});
+board.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches)gMove(T+t.identifier,t.clientX,t.clientY)},{passive:false});
+board.addEventListener('touchend',e=>{e.preventDefault();for(const t of e.changedTouches)gUp(T+t.identifier,false);syncTouches(e)},{passive:false});
+board.addEventListener('touchcancel',e=>{for(const t of e.changedTouches)gUp(T+t.identifier,true);syncTouches(e)});
+board.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')return;try{board.setPointerCapture(e.pointerId)}catch(_){}gDown('p'+e.pointerId,e.clientX,e.clientY)});
+board.addEventListener('pointermove',e=>{if(e.pointerType==='mouse')gMove('p'+e.pointerId,e.clientX,e.clientY)});
+board.addEventListener('pointerup',e=>{if(e.pointerType==='mouse')gUp('p'+e.pointerId,false)});
+board.addEventListener('pointercancel',e=>{if(e.pointerType==='mouse')gUp('p'+e.pointerId,true)});
+board.addEventListener('wheel',e=>{if(!S.ex||S.ex.type==='choice')return;e.preventDefault();const r=board.getBoundingClientRect(),fx=(e.clientX-r.left)/r.width,fy=(e.clientY-r.top)/r.height;
+  setView(curScale()*Math.exp(-e.deltaY*.0025),view.x+fx*view.w,view.y+fy*view.h,fx,fy)},{passive:false});
+['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>{if(e.target&&e.target.closest&&e.target.closest('.board'))e.preventDefault()},{passive:false}));
+
+$('#ex-reset').onclick=()=>{if(S.done)return;S.pos=S.ex.movables?S.ex.movables.map(m=>m.start.slice()):[];S.sel=new Set();S.marks=null;drawBoard()};
+$('#ex-rappel').onclick=()=>{const b=$('#ex-rappel-box');b.innerHTML=notionById(S.ex.notion).rappel;b.hidden=!b.hidden;$('#ex-rappel').textContent=b.hidden?'Rappel du cours':'Masquer le rappel'};
+
+/* ---------- validation ---------- */
+const SOLTXT=ex=>ex.type==='tap'?'Les bons représentants sont en vert, les autres en gris. ':ex.type==='choice'?'La bonne réponse est encadrée en vert. ':'La bonne réponse est dessinée en violet. ';
+function setFb(cls,html){const f=$('#ex-feedback');f.className='feedback '+cls;f.innerHTML=html;f.hidden=false}
+function check(){
+  const ex=S.ex;
+  if(ex.type==='point'||ex.type==='arrow'){
+    if(S.pos.some((p,i)=>eq(p,ex.movables[i].start))){setFb('info',ex.type==='arrow'?'Trace la flèche : pose le doigt sur le point de départ et fais glisser.':'Déplace tous les points sur le quadrillage avant de valider.');return null}
+    return S.pos.every((p,i)=>eq(p,ex.movables[i].t));
+  }
+  if(ex.type==='tap'){if(!S.sel.size){setFb('info','Touche au moins une flèche avant de valider.');return null}
+    return ex.taps.every(t=>t.correct===S.sel.has(t.id))}
+  if(S.choice==null){setFb('info','Choisis une réponse avant de valider.');return null}
+  return ex.options[S.choice].correct;
+}
+$('#ex-validate').onclick=()=>{
+  const ok=check();if(ok==null)return;
+  if(S.mode==='defi'){
+    S.done=true;S.defi.items.push({ex:S.ex,pos:S.pos.map(p=>p.slice()),sel:new Set(S.sel),choice:S.choice,ok});
+    flash(ok);$('#ex-validate').hidden=true;
+    setTimeout(()=>{S.defi.i++;S.defi.i>=S.defi.N?finishDefi():nextDefi()},750);return;
+  }
+  if(!ok&&S.tries===0){
+    S.tries=1;
+    if((S.ex.type==='point'||S.ex.type==='arrow')&&S.ex.movables.length>1)S.marks=S.pos.map((p,i)=>eq(p,S.ex.movables[i].t));
+    if(S.ex.type==='choice'){S.banned.add(S.choice);S.choice=null}
+    setFb('retry',`<b class="v">Pas encore, réessaie !</b>${S.ex.hint}`);
+    render();return;
+  }
+  S.done=true;S.ok=ok;S.marks=null;
+  const res=ok?(S.tries===0?'ok1':'ok2'):'ko';
+  S.series.results[S.series.k]=res;
+  const g0=S.ex.gen,wasWeak=(weakGet()[g0]||0)>0;updWeak(g0,res);const nowWeak=(weakGet()[g0]||0)>0,ms=updMast(g0,res);
+  let bonus='';
+  if(!ms.was&&ms.now&&!nowWeak){S.series.newStrong.push(g0);bonus=`<p class="star">★ Nouveau point fort : ${GEN_NAMES[g0]} ! Trois réussites du premier coup d’affilée.</p>`}
+  else if(wasWeak&&!nowWeak){S.series.overcome.push(g0);bonus=`<p class="star">★ Bravo, ce n’est plus un point faible : ${GEN_NAMES[g0]}.</p>`}
+  const st=stats();[S.notion.id,S.ex.notion].filter((v,i,a)=>a.indexOf(v)===i).forEach(id=>{st[id]=st[id]||{ok:0,n:0};st[id].n++;if(ok)st[id].ok++});store.set('vec2de.stats',st);
+  setFb(ok?'ok':'bad',`<b class="v">${ok?(S.tries===0?'Bravo, c’est juste du premier coup !':'Bravo, c’est juste au deuxième essai !'):'Ce n’est toujours pas ça. Voici la correction.'}</b>${ok?'':SOLTXT(S.ex)}${S.ex.explain}${bonus}${!ok&&S.series.k+1<S.series.N?'<p style="margin-top:8px"><b>L’exercice suivant reprendra ce type d’exercice, en plus simple.</b></p>':''}`);
+  $('#ex-validate').hidden=true;$('#ex-next').hidden=false;$('#ex-reset').disabled=true;
+  $('#ex-next').textContent=S.series.k+1>=S.series.N?'Voir mon bilan →':'Exercice suivant →';
+  render();
+};
+$('#ex-next').onclick=()=>{S.series.k++;nextTraining()};
+function flash(ok){const d=document.createElement('div');d.className='flash '+(ok?'ok':'bad');d.textContent=ok?'✓':'✗';document.body.appendChild(d);setTimeout(()=>d.remove(),700)}
+
+$('#ex-back').onclick=()=>{
+  $('#quit-text').textContent=S.mode==='train'?'Quitter la série ? Ta progression dans cette série sera perdue.':'Abandonner le défi ? Ton score ne sera pas calculé.';
+  $('#quit-confirm').hidden=false;
+};
+$('#quit-no').onclick=()=>$('#quit-confirm').hidden=true;
+$('#quit-yes').onclick=()=>{$('#quit-confirm').hidden=true;stopTimer();if(S.mode==='train'){renderNotions();show('notions')}else show('home')};
+
+/* ---------- codes ---------- */
+const ALPH='23456789ABCDEFGHJKMNPQRSTUVWXYZ';
+const enc=(n,len)=>{let s='';for(let i=0;i<len;i++){s=ALPH[n%31]+s;n=Math.floor(n/31)}return s};
+const dec=s=>[...s].reduce((n,c)=>n*31+ALPH.indexOf(c),0);
+const normName=s=>String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z]/g,'');
+const cleanCode=s=>String(s).toUpperCase().split('').filter(c=>ALPH.includes(c)).join('');
+const chk=(name,chal,score,time)=>fnv(normName(name)+'|'+chal+'|'+score+'|'+time+'|atelier-vecteurs-2de')%29791;
+function resultCode(name,chal,score,time){time=Math.min(time,29790);return enc(score,1)+'-'+enc(time,3)+'-'+enc(chk(name,chal,score,time),3)}
+function readResult(name,chal,code){const c=cleanCode(code);if(c.length!==7)return null;
+  const score=ALPH.indexOf(c[0]),time=dec(c.slice(1,4)),k=dec(c.slice(4));return{score,time,valid:score<=30&&k===chk(name,chal,score,time)}}
+/* f : 0 = pas de formulaire, 1 à 7 = formulaire FORMS[f-1], 8 = défi créé par un élève */
+function packCfg(c){const f=c.st?8:Math.max(0,Math.min(7,c.f|0));return(c.mask-1)+63*((c.n-NMIN)+(NMAX-NMIN+1)*(c.di+4*f))}
+function makeChal(c){return enc(packCfg(c)+CFG_N*Math.floor(Math.random()*SEEDS),6)}
+function readChal(code){code=cleanCode(code);if(code.length!==6)return null;const n=dec(code);if(n>=CFG_N*SEEDS)return null;
+  let v=n%CFG_N;const mask=v%63+1;v=Math.floor(v/63);const N=v%(NMAX-NMIN+1)+NMIN;v=Math.floor(v/(NMAX-NMIN+1));const di=v%4,f=Math.floor(v/4);
+  return{mask,n:N,N,di,f:f===8?0:f,st:f===8?1:0,notions:NOTIONS.filter((_,i)=>mask>>i&1)}}
+function fixCfg(c){c=c||{};if(!c.mask)c.mask=63;if(!(c.n>=NMIN&&c.n<=NMAX))c.n=[5,8,10,12,15,20][c.ci]||10;delete c.ci;if(!(c.di>=0&&c.di<=3))c.di=3;if(!(c.f>=0&&c.f<=FORMS.length))c.f=FORMS.length?1:0;return c}
+const fmtCode=c=>c&&c.length===6?c.slice(0,3)+' '+c.slice(3):c;
+/* Contrôle : empreinte des questions d'un défi. Si deux iPads affichent le même contrôle, ils ont exactement les mêmes questions. */
+const _ctl={};
+function defiCheck(code){if(_ctl[code])return _ctl[code];const plan=defiPlan(code);
+  const sig=plan.map(([g,L],i)=>{const ex=make(g,mkR(fnv(code)+i*7919),L);return ex.prompt+JSON.stringify(ex.fixed)+JSON.stringify(ex.movables||ex.taps||ex.options)}).join('|');
+  return _ctl[code]=enc(fnv(sig)%29791,3)}
+function cfgText(c,withForm){const ns=c.notions.length===NOTIONS.length?'Tout le chapitre':c.notions.map(n=>n.name).join(', ');
+  return`${ns} · ${c.N} questions · ${c.di===3?'difficulté progressive':'niveau '+(c.di+1)}`+(withForm&&!c.st?` · ${c.f&&FORMS[c.f-1]?'résultats vers « '+FORMS[c.f-1].name+' »':'sans formulaire'}`:'')}
+function defiPlan(code){
+  const c=readChal(code),R=mkR(fnv(code)),ns=c.notions,off=R.int(0,ns.length-1),plan=[];let last=null;
+  for(let i=0;i<c.N;i++){const n=ns[(i+off)%ns.length],L=c.di===3?levelFor(i,c.N):c.di+1,list=n.plan[L];
+    let g=list[R.int(0,list.length-1)];if(list.length>1&&g===last)g=list[(list.indexOf(g)+1)%list.length];last=g;plan.push([g,L])}
+  return plan}
+function pwHash(s){let a=fnv('atelier|'+s),b=fnv(s+'|vecteurs');for(let i=0;i<4000;i++){a=fnv(a+':'+b+':'+s);b=fnv(b+':'+a)}return a.toString(16)+b.toString(16)}
+const fmtClock=t=>`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+const fmtTime=t=>t<60?`${t} s`:`${Math.floor(t/60)} min ${String(t%60).padStart(2,'0')} s`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- lien Microsoft Forms prérempli ---------- */
+const MARKERS=['NOM','CLASSE','DEFI','SCORE','TEMPS','CODE'];
+function fillForm(tpl,vals){
+  const i=tpl.indexOf('?');if(i<0)return{url:null,found:[]};
+  const base=tpl.slice(0,i),found=[];
+  const q=tpl.slice(i+1).split('&').map(kv=>{
+    const j=kv.indexOf('=');if(j<0)return kv;
+    const k=kv.slice(0,j);let v;try{v=decodeURIComponent(kv.slice(j+1).replace(/\+/g,' '))}catch(e){return kv}
+    const quoted=/^".*"$/.test(v.trim());
+    const key=v.trim().replace(/^"|"$/g,'').trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+    if(MARKERS.includes(key)&&key in vals){found.push(key);const nv=String(vals[key]);return k+'='+encodeURIComponent(quoted?`"${nv}"`:nv)}
+    return kv});
+  return{url:base+'?'+q.join('&'),found};
+}
+
+/* ---------- sélecteur de réglages (prof et élèves) ---------- */
+function renderPicker(root,c,save){
+  root.innerHTML=`<div><span class="lbl">Notions</span><div class="optgroup"><button type="button" class="opt all${c.mask===63?' on':''}" data-nall>Tout le chapitre</button>${
+    NOTIONS.map((n,i)=>`<button type="button" class="opt${c.mask>>i&1?' on':''}" data-ni="${i}">${n.name}</button>`).join('')}</div></div>
+  <div><label class="lbl" for="${root.id}-n">Nombre de questions : <b class="nval" data-nval>${c.n}</b></label>
+    <div class="slider"><span class="muted small">${NMIN}</span><input type="range" id="${root.id}-n" min="${NMIN}" max="${NMAX}" step="1" value="${c.n}" data-n><span class="muted small">${NMAX}</span></div></div>
+  <div><span class="lbl">Difficulté</span><div class="optgroup">${DIFFS.map((n,i)=>`<button type="button" class="opt${c.di===i?' on':''}" data-di="${i}">${n}</button>`).join('')}</div>
+  <p class="muted small" style="margin-top:6px">${DIFF_HELP[c.di]}</p></div>${root.id==='prof-cfg'?`
+  <div><span class="lbl">Résultats envoyés vers</span><div class="optgroup">${FORMS.map((fm,i)=>`<button type="button" class="opt${c.f===i+1?' on':''}" data-fi="${i+1}">${esc(fm.name)}</button>`).join('')}<button type="button" class="opt${c.f===0?' on':''}" data-fi="0">Aucun formulaire</button></div>
+  <p class="muted small" style="margin-top:6px">${c.f?'À la fin du défi, chaque élève verra le bouton « Envoyer mon résultat » vers ce formulaire.':'Les élèves verront leur résultat à l’écran et devront te le montrer.'}</p></div>`:''}`;
+  const redo=()=>{save();renderPicker(root,c,save)};
+  const auto=()=>{if(root.id==='prof-cfg')autoForm(c)};
+  root.querySelectorAll('[data-nall]').forEach(b=>b.onclick=()=>{c.mask=63;auto();redo()});
+  root.querySelectorAll('[data-ni]').forEach(b=>b.onclick=()=>{const bit=1<<+b.dataset.ni;let m=c.mask===63?bit:c.mask^bit;if(!m)m=63;c.mask=m;auto();redo()});
+  const sl=root.querySelector('[data-n]'),paint=()=>{sl.style.setProperty('--p',((c.n-NMIN)/(NMAX-NMIN)*100)+'%');root.querySelector('[data-nval]').textContent=c.n};paint();
+  sl.addEventListener('input',()=>{c.n=+sl.value;paint();save()});
+  root.querySelectorAll('[data-di]').forEach(b=>b.onclick=()=>{c.di=+b.dataset.di;redo()});
+  root.querySelectorAll('[data-fi]').forEach(b=>b.onclick=()=>{c.f=+b.dataset.fi;redo()});
+}
+
+/* ---------- défi ---------- */
+let timerId=null;
+function stopTimer(){if(timerId)clearInterval(timerId);timerId=null}
+$('#go-defi').onclick=()=>{$('#defi-code').value='';$('#defi-summary').hidden=true;setTab('join');$('#stu-codezone').hidden=true;$('#stu-err').hidden=true;renderPicker($('#stu-cfg'),stuCfg,saveStu);$('#defi-name').value=store.get('vec2de.name','');$('#defi-class').value=store.get('vec2de.class','');$('#defi-err').hidden=true;show('defi')};
+function showDefiSummary(){const v=$('#defi-code').value,s=$('#defi-summary');
+  if(cleanCode(v).length<6){s.hidden=true;return}const c=readChal(v);s.hidden=false;
+  if(c){s.className='defisum';s.innerHTML=esc(cfgText(c))+`<br><span class="ctl">Contrôle des questions : <b>${defiCheck(cleanCode(v))}</b></span>`}else{s.className='defisum bad';s.textContent='Ce code de défi n’existe pas. Vérifie-le.'}}
+$('#defi-code').addEventListener('input',e=>{const v=fmtCode(cleanCode(e.target.value).slice(0,6));if(v!==e.target.value)e.target.value=v;showDefiSummary()});
+let stuCfg=fixCfg({...DEFAULT_CFG,...store.get('vec2de.stucfg',{})});stuCfg.st=1;stuCfg.f=0;
+const saveStu=()=>{store.set('vec2de.stucfg',stuCfg);$('#stu-codezone').hidden=true};
+function setTab(t){document.querySelectorAll('[data-tab]').forEach(b=>{const on=b.dataset.tab===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
+  $('#tab-join').hidden=t!=='join';$('#tab-create').hidden=t!=='create'}
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+function identity(err){
+  const name=$('#defi-name').value.trim(),cls=$('#defi-class').value.trim();
+  if(normName(name).length<2){err.textContent='Écris ton prénom et ton nom en haut de la page.';err.hidden=false;return null}
+  if(!cls){err.textContent='Indique ta classe en haut de la page.';err.hidden=false;return null}
+  store.set('vec2de.name',name);store.set('vec2de.class',cls);err.hidden=true;return{name,cls};
+}
+function startDefi(code,who){
+  const t0=Date.now(),plan=defiPlan(code);
+  S.mode='defi';S.defi={code,name:who.name,cls:who.cls,i:0,items:[],t0,plan,N:plan.length,elapsed:()=>Math.floor((Date.now()-t0)/1000)};
+  stopTimer();timerId=setInterval(()=>{const t=$('#timer');if(t)t.textContent=fmtClock(S.defi.elapsed())},500);
+  nextDefi();show('ex');
+}
+$('#defi-start').onclick=()=>{
+  const err=$('#defi-err'),code=cleanCode($('#defi-code').value);
+  if(!code){err.textContent='Entre le code du défi. Pour créer ton propre défi, va dans « Défier mes camarades ».';err.hidden=false;return}
+  if(code.length!==6){err.textContent='Le code du défi fait 6 caractères. Vérifie-le.';err.hidden=false;return}
+  if(!readChal(code)){err.textContent='Ce code de défi n’existe pas. Vérifie-le.';err.hidden=false;return}
+  const who=identity(err);if(who)startDefi(code,who);
+};
+$('#stu-gen').onclick=()=>{
+  if(!identity($('#stu-err')))return;
+  const code=makeChal(stuCfg);$('#stu-bigcode').textContent=fmtCode(code);$('#stu-summary').innerHTML=esc(cfgText(readChal(code)))+`<br><span class="ctl">Contrôle des questions : <b>${defiCheck(code)}</b></span>`;$('#stu-codezone').hidden=false;
+  $('#stu-codezone').scrollIntoView({behavior:'smooth',block:'center'});
+};
+$('#stu-start').onclick=()=>{const who=identity($('#stu-err'));if(who)startDefi(cleanCode($('#stu-bigcode').textContent),who)};
+function nextDefi(){const d=S.defi,[g,L]=d.plan[d.i];load(make(g,mkR(fnv(d.code)+d.i*7919),L))}
+function finishDefi(){
+  stopTimer();const d=S.defi,time=Math.min(d.elapsed(),29790),score=d.items.filter(x=>x.ok).length,code=resultCode(d.name,d.code,score,time);
+  $('#res-defi').textContent='Défi '+fmtCode(d.code)+' · contrôle '+defiCheck(d.code);
+  $('#res-title').textContent=`Bravo ${d.name.split(' ')[0]}, défi terminé !`;
+  $('#res-score').textContent=`${score} / ${d.N}`;$('#res-time').textContent=fmtTime(time);$('#res-code').textContent=code;
+  const st=readChal(d.code).st;
+  $('#res-duel').hidden=!st;$('#res-send').hidden=!!st;
+  S.duel=[{name:d.name,score,time,me:true}];renderDuel();$('#duel-err').hidden=true;$('#duel-name').value='';$('#duel-code').value='';
+  const cc=readChal(d.code),fm=!st&&cc.f?FORMS[cc.f-1]:null,f=fm?fillForm(fm.url,{NOM:d.name,CLASSE:d.cls,DEFI:d.code,SCORE:score,TEMPS:time,CODE:code}):null;
+  $('#res-send').innerHTML=f&&f.url
+    ?`<h3>Envoie ton résultat à ton professeur</h3><p class="small">Le formulaire s'ouvre déjà rempli. Ne modifie rien et touche simplement « Envoyer ».</p><div class="row"><a class="btn primary" href="${esc(f.url)}" target="_blank" rel="noopener">Envoyer mon résultat</a></div>`
+    :`<h3>Montre ce résultat à ton professeur</h3><p class="small">Fais une capture d'écran de cette page : ton nom, ton score et ton code de vérification sont dessus.</p>`;
+  $('#res-recap').innerHTML=d.items.map((it,i)=>`<button class="${it.ok?'ok':'bad'}" data-r="${i}" type="button"><span class="s">${it.ok?'✓':'✗'}</span>Q${i+1}<small>${notionById(it.ex.notion).name}</small></button>`).join('');
+  document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>openReview(+b.dataset.r));
+  show('result');
+}
+function renderDuel(){
+  const L=S.duel.slice().sort((a,b)=>b.score-a.score||a.time-b.time);let rank=0,prev=null;
+  $('#duel-rows').innerHTML=L.map((r,i)=>{if(!prev||r.score!==prev.score||r.time!==prev.time)rank=i+1;prev=r;
+    return`<tr class="${r.me?'me':''}"><td>${rank===1?'🏆 1':rank}</td><td>${esc(r.name)}${r.me?' (toi)':''}</td><td>${r.score} / ${S.defi.N}</td><td>${fmtTime(r.time)}</td></tr>`}).join('');
+}
+$('#duel-code').addEventListener('input',e=>{e.target.value=e.target.value.toUpperCase()});
+$('#duel-add').onclick=()=>{
+  const name=$('#duel-name').value.trim(),code=$('#duel-code').value,err=$('#duel-err');
+  if(normName(name).length<2){err.textContent='Écris le prénom et le nom de ton camarade, comme il les a tapés.';err.hidden=false;return}
+  const r=readResult(name,S.defi.code,code);
+  if(!r){err.textContent='Un code de vérification a 7 caractères, par exemple A-3KX-9QM.';err.hidden=false;return}
+  if(!r.valid||r.score>S.defi.N){err.textContent='Ce code ne correspond pas à ce nom pour ce défi. Vérifie l’orthographe du nom et le code.';err.hidden=false;return}
+  err.hidden=true;S.duel=S.duel.filter(x=>x.me||normName(x.name)!==normName(name));S.duel.push({name,score:r.score,time:r.time});
+  $('#duel-name').value='';$('#duel-code').value='';renderDuel();
+};
+function openReview(i){
+  const it=S.defi.items[i],ex=it.ex;
+  $('#rv-title').textContent=`Question ${i+1} · ${it.ok?'réussie':'à revoir'}`;
+  $('#rv-prompt').innerHTML=ex.prompt;
+  const isChoice=ex.type==='choice';$('#rv-board-wrap').hidden=isChoice;$('#rv-choices').hidden=!isChoice;
+  if(isChoice)renderChoices($('#rv-choices'),ex,it.choice,true,false);
+  else $('#rv-board').innerHTML=boardSVG(ex,{pos:it.pos,sel:it.sel},{sol:!it.ok,verdict:true});
+  const f=$('#rv-feedback');f.className='feedback '+(it.ok?'ok':'bad');
+  f.innerHTML=`<b class="v">${it.ok?'Réponse juste':'Réponse fausse'}</b>${it.ok?'':SOLTXT(ex)}${ex.explain}`;
+  $('#review').hidden=false;
+}
+$('#rv-close').onclick=()=>$('#review').hidden=true;
+$('#review').onclick=e=>{if(e.target.id==='review')$('#review').hidden=true};
+
+/* ---------- espace prof ---------- */
+let prof=store.get('vec2de.prof4',{chal:'',cfg:{...DEFAULT_CFG,f:FORMS.length?1:0}});prof.cfg=fixCfg(prof.cfg);
+if(prof.chal&&!readChal(prof.chal))prof.chal='';
+prof.cfg.st=0;
+const saveProf=()=>store.set('vec2de.prof4',prof);
+function renderCfg(){renderPicker($('#prof-cfg'),prof.cfg,saveProf)}
+function renderProf(){
+  renderCfg();
+  const c=prof.chal?readChal(prof.chal):null;
+  $('#prof-bigcode').textContent=c?fmtCode(prof.chal):'—';
+  $('#prof-summary').hidden=!c;if(c)$('#prof-summary').innerHTML=esc(cfgText(c,true))+`<br><span class="ctl">Contrôle des questions : <b>${defiCheck(prof.chal)}</b></span>`;
+  $('#prof-try').hidden=!c;
+  if(!$('#prof-filter').value&&c)$('#prof-filter').value=fmtCode(prof.chal);
+  $('#prof-form-status').innerHTML=FORMS.length?`<p class="small" style="margin-bottom:8px">Formulaires reliés à l'appli (à choisir dans la section 1 pour chaque défi) :</p><ul class="formlist">${FORMS.map((f,i)=>`<li><span class="pill ok">${i+1}</span><b>${esc(f.name)}</b><a class="btn ghost" href="${esc(fillForm(f.url,{NOM:'Élève Test',CLASSE:'2nde test',DEFI:'TEST00',SCORE:7,TEMPS:252,CODE:resultCode('Élève Test','TEST00',7,252)}).url)}" target="_blank" rel="noopener">Envoi d'essai</a></li>`).join('')}</ul>`
+    :`<span class="err">Aucun formulaire relié pour l'instant.</span>`;
+}
+const unlocked=()=>{try{return sessionStorage.getItem('vec2de.unlock')===PROF_PW}catch(e){return S.unlock===true}};
+$('#go-prof').onclick=()=>{if(unlocked()){renderProf();show('prof')}else{$('#lock-pw').value='';$('#lock-err').hidden=true;show('lock');setTimeout(()=>$('#lock-pw').focus(),50)}};
+function tryUnlock(){
+  if(pwHash($('#lock-pw').value.trim())===PROF_PW){S.unlock=true;try{sessionStorage.setItem('vec2de.unlock',PROF_PW)}catch(e){}renderProf();show('prof')}
+  else{$('#lock-err').textContent='Mot de passe incorrect.';$('#lock-err').hidden=false;$('#lock-pw').select()}
+}
+$('#lock-go').onclick=tryUnlock;
+$('#lock-pw').addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock()});
+$('#prof-lock').onclick=()=>{S.unlock=false;try{sessionStorage.removeItem('vec2de.unlock')}catch(e){}show('home')};
+$('#prof-gen').onclick=()=>{prof.chal=makeChal(prof.cfg);saveProf();$('#prof-filter').value=fmtCode(prof.chal);renderProf()};
+$('#prof-try').onclick=()=>{$('#go-defi').onclick();setTab('join');$('#defi-code').value=fmtCode(prof.chal);showDefiSummary()};
+$('#prof-tpl-test').onclick=()=>{
+  const tpl=$('#prof-tpl').value.trim(),msg=$('#prof-tpl-msg'),open=$('#prof-tpl-open');msg.hidden=false;
+  if(!/^https:\/\/forms\.(office|microsoft|cloud\.microsoft)(\.com)?\//i.test(tpl)){msg.className='small err';msg.textContent='Ce n’est pas un lien Microsoft Forms. Il doit commencer par https://forms.office.com/ (ou forms.microsoft.com).';open.hidden=true;return}
+  const f=fillForm(tpl,{NOM:'Élève Test',CLASSE:'2nde test',DEFI:'TEST00',SCORE:7,TEMPS:252,CODE:resultCode('Élève Test','TEST00',7,252)});
+  const miss=MARKERS.filter(m=>!f.found.includes(m));
+  if(miss.length){msg.className='small err';msg.textContent=`Marqueurs introuvables dans le lien : ${miss.join(', ')}. Dans l'écran « URL préremplie », chaque question doit contenir exactement ce mot, en majuscules.`;open.hidden=true;return}
+  msg.className='small okmsg';msg.textContent='Lien valide : les 6 marqueurs sont reconnus. Ouvre un envoi d’essai pour vérifier, puis transmets ce lien à Claude.';
+  open.href=f.url;open.hidden=false;
+};
+const CODE_RE=/^[2-9A-Z]-[2-9A-Z]{3}-[2-9A-Z]{3}$/;
+$('#prof-filter').addEventListener('input',e=>{e.target.value=fmtCode(cleanCode(e.target.value).slice(0,6))});
+$('#prof-import').onclick=()=>{
+  const err=$('#prof-err'),lines=$('#prof-paste').value.split(/\r?\n/);
+  const rows=[];
+  lines.forEach(line=>{const c=line.split(/\t|;/).map(x=>x.trim().replace(/^"|"$/g,''));
+    const j=c.findIndex(x=>CODE_RE.test(x.toUpperCase()));if(j<5)return;
+    const name=c[j-5],cls=c[j-4],defi=cleanCode(c[j-3]),code=c[j].toUpperCase();
+    const typedScore=parseInt(c[j-2],10),typedTime=parseInt(c[j-1],10);
+    rows.push({name,cls,defi,code,typedScore,typedTime,res:readResult(name,defi,code)})});
+  if(!rows.length){err.textContent='Aucune ligne reconnue. Copie les lignes depuis Excel en gardant les colonnes dans l’ordre du formulaire (Nom, Classe, Code du défi, Score, Temps, Code de vérification).';err.hidden=false;$('#prof-rows').innerHTML='';return}
+  err.hidden=true;
+  let filter=cleanCode($('#prof-filter').value);
+  if(!filter||!rows.some(r=>r.defi===filter)){const cnt={};rows.forEach(r=>cnt[r.defi]=(cnt[r.defi]||0)+1);filter=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];$('#prof-filter').value=fmtCode(filter)}
+  const best={};
+  rows.filter(r=>r.defi===filter).forEach(r=>{const key=normName(r.name)+'|'+normName(r.cls),v=r.res&&r.res.valid,cur=best[key];
+    if(!cur){best[key]=r;return}
+    const cv=cur.res&&cur.res.valid;
+    if(v&&(!cv||r.res.score>cur.res.score||(r.res.score===cur.res.score&&r.res.time<cur.res.time)))best[key]=r});
+  const list=Object.values(best).sort((a,b)=>{const va=a.res&&a.res.valid,vb=b.res&&b.res.valid;if(va!==vb)return va?-1:1;if(!va)return 0;return b.res.score-a.res.score||a.res.time-b.res.time});
+  let rank=0;
+  $('#prof-rows').innerHTML=list.map(r=>{const v=r.res&&r.res.valid;if(v)rank++;
+    const sMod=v&&r.typedScore!==r.res.score,tMod=v&&r.typedTime!==r.res.time;
+    const status=!v?'<span class="pill bad">Code invalide : nom, défi ou code modifié</span>'
+      :sMod||tMod?`<span class="pill bad">Triche : ${[sMod?`score saisi ${isNaN(r.typedScore)?'?':r.typedScore}`:'',tMod?`temps saisi ${isNaN(r.typedTime)?'?':fmtTime(r.typedTime)}`:''].filter(Boolean).join(', ')}</span>`
+      :'<span class="pill ok">Conforme</span>';
+    return`<tr><td>${v?rank:'–'}</td><td>${esc(r.name)}</td><td>${esc(r.cls)}</td><td>${v?r.res.score+' / '+((readChal(r.defi)||{}).N||'?'):'–'}</td><td>${v?fmtTime(r.res.time):'–'}</td><td>${status}</td></tr>`}).join('');
+};
+
+show('home');
+</script>
+
+</body></html>
