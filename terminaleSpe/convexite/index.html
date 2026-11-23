@@ -50,6 +50,8 @@ table.tv th,table.tv td{border:1px solid #999;padding:4px 14px;text-align:center
 table.tv th{background:#f3f1ec;font-weight:600}
 table.tv td.up{vertical-align:top}table.tv td.dn{vertical-align:bottom}
 .arr{font-size:1.5rem;line-height:1}
+.tvsvg{display:block;width:100%;max-width:400px;margin:.6em auto}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;max-width:100%}
 .c-f{color:var(--f)}.c-t{color:var(--t)}.c-pos{color:var(--pos)}.c-neg{color:var(--neg)}.c-d{color:var(--d)}
 .nav{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
 .nav button{padding:7px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer}
@@ -100,8 +102,8 @@ svg .lbl{font-family:"Source Serif 4",serif;font-style:italic;font-size:16px}
       <section class="step">
         <h2>Le théorème</h2>
         <div class="thm"><b>Théorème.</b> Soit \(f\) une fonction deux fois dérivable sur un intervalle \(I\). Si \(f''(x)>0\) pour tout \(x\in I\), alors \(f\) est convexe sur \(I\).</div>
-        <p>On démontre que la courbe \(\mathcal C_f\) est <b>au-dessus de chacune de ses tangentes</b>, c'est-à-dire&nbsp;:</p>
-        \[\text{pour tout } a\in I \text{ et tout } x\in I,\quad f(x)\ \geqslant\ f'(a)(x-a)+f(a).\]
+        <p>On démontre que la courbe \(\mathcal C_f\) est <b>au-dessus de chacune de ses tangentes</b>, c'est-à-dire que, pour tout \(a\in I\) et tout \(x\in I\)&nbsp;:</p>
+        \[f(x)\ \geqslant\ f'(a)(x-a)+f(a).\]
         <details class="q"><summary>Question pour la classe</summary>
           <p class="qtext">Pour montrer qu'une expression est supérieure à une autre, quelle méthode connaissez-vous&nbsp;?</p>
           <p class="rep">On étudie le <b>signe de leur différence</b>. C'est toute l'idée de la preuve.</p>
@@ -140,7 +142,7 @@ svg .lbl{font-family:"Source Serif 4",serif;font-style:italic;font-size:16px}
       <section class="step">
         <h2>On dérive \(g\)</h2>
         <p>\(g\) est dérivable sur \(I\). On dérive terme à terme, \(a\) étant fixé&nbsp;:</p>
-        \[g'(x)=f'(x)-\Big[\underbrace{f'(a)}_{\text{dérivée de } f'(a)(x-a)}+\underbrace{\ 0\ }_{\text{dérivée de } f(a)}\Big]\]
+        \[g'(x)=f'(x)-\Big[\underbrace{f'(a)}_{\left(f'(a)(x-a)\right)'}+\underbrace{\ 0\ }_{\left(f(a)\right)'}\Big]\]
         \[\boxed{\,g'(x)=f'(x)-f'(a)\,}\]
         <div class="trap"><b>Erreur classique</b>&nbsp;: « dériver » \(f'(a)\) en \(f''(a)\). Or \(f'(a)\) est un nombre&nbsp;: \(x\mapsto f'(a)(x-a)\) est une fonction affine, de coefficient directeur \(f'(a)\).</div>
         <details class="q"><summary>Question pour la classe</summary>
@@ -167,11 +169,32 @@ svg .lbl{font-family:"Source Serif 4",serif;font-style:italic;font-size:16px}
 
       <section class="step">
         <h2>Variations de \(g\)</h2>
-        <table class="tv">
-          <tr><th>\(x\)</th><td></td><td>\(a\)</td><td></td></tr>
-          <tr><th>\(g'(x)\)</th><td class="c-neg">\(-\)</td><td>\(0\)</td><td class="c-pos">\(+\)</td></tr>
-          <tr style="height:70px"><th>\(g\)</th><td class="up"><span class="arr">↘</span></td><td class="dn">\(0\)</td><td class="up"><span class="arr">↗</span></td></tr>
-        </table>
+        <svg class="tvsvg" viewBox="0 0 380 176" role="img" aria-label="Tableau de variations de g : g' négative puis positive, g décroissante puis croissante, minimum 0 en a">
+          <defs>
+            <marker id="hR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/></marker>
+            <marker id="hG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#15803d"/></marker>
+          </defs>
+          <rect x="1" y="1" width="378" height="174" rx="8" fill="#fff" stroke="#1d1d1f" stroke-width="1.5"/>
+          <rect x="1" y="1" width="78" height="174" rx="8" fill="#f3f1ec"/>
+          <rect x="40" y="1" width="39" height="174" fill="#f3f1ec"/>
+          <rect x="1" y="1" width="378" height="174" rx="8" fill="none" stroke="#1d1d1f" stroke-width="1.5"/>
+          <line x1="79" y1="1" x2="79" y2="175" stroke="#1d1d1f" stroke-width="1.5"/>
+          <line x1="1" y1="38" x2="379" y2="38" stroke="#1d1d1f" stroke-width="1.5"/>
+          <line x1="1" y1="76" x2="379" y2="76" stroke="#1d1d1f" stroke-width="1.5"/>
+          <line x1="229" y1="38" x2="229" y2="45" stroke="#888" stroke-width="1.2"/><line x1="229" y1="69" x2="229" y2="76" stroke="#888" stroke-width="1.2"/>
+          <text x="40" y="25" class="lbl" font-size="19" text-anchor="middle">x</text>
+          <text x="40" y="63" class="lbl" font-size="19" text-anchor="middle">g′(x)</text>
+          <text x="40" y="132" class="lbl" font-size="19" text-anchor="middle">g</text>
+          <text x="229" y="25" class="lbl" font-size="19" fill="#d97706" text-anchor="middle">a</text>
+          <text x="154" y="64" font-size="24" fill="#dc2626" text-anchor="middle" font-weight="600">−</text>
+          <text x="229" y="63" font-size="18" text-anchor="middle">0</text>
+          <text x="304" y="64" font-size="22" fill="#15803d" text-anchor="middle" font-weight="600">+</text>
+          <line x1="100" y1="92" x2="212" y2="152" stroke="#dc2626" stroke-width="2.5" marker-end="url(#hR)"/>
+          <line x1="246" y1="152" x2="358" y2="92" stroke="#15803d" stroke-width="2.5" marker-end="url(#hG)"/>
+          <circle cx="229" cy="160" r="14" fill="none" stroke="#d97706" stroke-width="1.8"/>
+          <text x="229" y="166" font-size="18" text-anchor="middle" font-weight="600">0</text>
+          <text x="229" y="104" font-size="12" fill="#d97706" text-anchor="middle" font-style="italic">minimum</text>
+        </svg>
         <p>\(g(a)=f(a)-\big[f'(a)\times 0+f(a)\big]=0\).</p>
         <p>\(g\) admet donc un <b>minimum</b> en \(a\), égal à 0&nbsp;: pour tout \(x\in I\), \(g(x)\geqslant g(a)=0\).</p>
         <details class="q"><summary>Question pour la classe</summary>
