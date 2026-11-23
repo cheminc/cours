@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Si f'' > 0, alors f est convexe — la fonction auxiliaire</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,wght@1,400;1,600&display=swap">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<style>
+:root{
+  --bg:#f6f4ef; --ink:#1d1d1f; --muted:#6b6b6b; --card:#fff; --line:#e3dfd5;
+  --f:#1d4ed8; --t:#d97706; --pos:#15803d; --neg:#dc2626; --d:#7c3aed;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,sans-serif;font-size:17px;line-height:1.45}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;padding:12px 18px;border-bottom:1px solid var(--line);background:#fff}
+header h1{font-size:1.25rem;margin:0;font-weight:700}
+header h1 span{color:var(--muted);font-weight:400}
+header label{margin-left:auto;font-size:.95rem;color:var(--muted)}
+select,button{font:inherit}
+select{padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:#fff}
+.layout{display:grid;grid-template-columns:minmax(330px,37fr) 63fr;gap:16px;padding:14px 18px;max-width:1500px;margin:0 auto}
+@media (max-width:900px){.layout{grid-template-columns:1fr}.plots{order:-1}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;min-height:0}
+.counter{font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.steps{position:relative;flex:1}
+.step h2{margin:.15em 0 .5em;font-size:1.35rem}
+.step:not(.on){position:absolute;visibility:hidden;height:0;overflow:hidden;pointer-events:none}
+.step p{margin:.5em 0}
+.step ul,.step ol{margin:.4em 0;padding-left:1.3em}
+.thm{border-left:4px solid var(--f);background:#eef3ff;padding:8px 12px;border-radius:0 8px 8px 0}
+.key{border-left:4px solid var(--pos);background:#ecf8f0;padding:8px 12px;border-radius:0 8px 8px 0;margin:.6em 0}
+.trap{border-left:4px solid var(--neg);background:#fdeeee;padding:8px 12px;border-radius:0 8px 8px 0;margin:.6em 0}
+.method{border:1px dashed var(--muted);padding:8px 12px;border-radius:8px;margin-top:.7em}
+.todo{color:#444;font-style:italic}
+details.q{margin-top:.7em;background:#faf8f3;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+details.q summary{cursor:pointer;font-weight:600}
+details.q .qtext{margin:.3em 0}
+details.q .rep{color:#333;border-top:1px solid var(--line);padding-top:.3em}
+.warn{display:none;margin:0 0 10px;border:1px solid #f3c2c2;background:#fff5f5;padding:8px 12px;border-radius:8px;font-size:.95rem}
+.warn.on{display:block}
+table.tv{border-collapse:collapse;margin:.5em 0;font-size:1.05rem}
+table.tv th,table.tv td{border:1px solid #999;padding:4px 14px;text-align:center;min-width:46px}
+table.tv th{background:#f3f1ec;font-weight:600}
+table.tv td.up{vertical-align:top}table.tv td.dn{vertical-align:bottom}
+.arr{font-size:1.5rem;line-height:1}
+.c-f{color:var(--f)}.c-t{color:var(--t)}.c-pos{color:var(--pos)}.c-neg{color:var(--neg)}.c-d{color:var(--d)}
+.nav{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.nav button{padding:7px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer}
+.nav button.main{background:var(--ink);color:#fff;border-color:var(--ink)}
+.nav button:disabled{opacity:.35;cursor:default}
+.dots{display:flex;gap:6px;flex:1;justify-content:center}
+.dots button{width:13px;height:13px;padding:0;border-radius:50%;border:none;background:#d6d2c8;cursor:pointer}
+.dots button.on{background:var(--ink)}
+.ctrl{display:grid;grid-template-columns:auto 1fr auto;gap:6px 10px;align-items:center;margin-top:10px;font-size:.95rem}
+.ctrl input[type=range]{width:100%}
+.ctrl .v{font-variant-numeric:tabular-nums;min-width:3.6em;text-align:right}
+.ctrl button{padding:5px 12px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;white-space:nowrap}
+.ctrl button:disabled,.ctrl input:disabled{opacity:.35;cursor:default}
+.ctrl .lab{font-family:"Source Serif 4",serif;font-style:italic;font-size:1.05rem}
+.plots{display:flex;flex-direction:column;gap:12px;min-width:0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:600px){.row{grid-template-columns:1fr}}
+figure.panel{margin:0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 8px 4px;position:relative}
+figure.panel figcaption{font-size:.9rem;color:var(--muted);padding:0 4px 4px}
+figure.panel svg{width:100%;height:auto;display:block}
+.lock{position:absolute;inset:30px 8px 8px;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.88);color:var(--muted);font-style:italic;border-radius:8px}
+figure.locked .lock{display:flex}
+svg text{font-family:"Source Sans 3",sans-serif}
+svg .tick{font-size:11px;fill:#888}
+svg .grid{stroke:#eee;stroke-width:1}
+svg .axis{stroke:#999;stroke-width:1.2}
+svg .lbl{font-family:"Source Serif 4",serif;font-style:italic;font-size:16px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Si \(f''>0\), alors \(f\) est convexe <span>— la fonction auxiliaire</span></h1>
+  <label>Fonction&nbsp;:
+    <select id="fun">
+      <option value="exp">f(x) = e^(x/2) − x</option>
+      <option value="para">f(x) = (x − 1)² / 4</option>
+      <option value="cub">f(x) = x³/8 − x  (contre-exemple)</option>
+    </select>
+  </label>
+</header>
+
+<div class="layout">
+  <div class="card">
+    <div class="warn" id="warn"><b>Contre-exemple.</b> Ici \(f''(x)=\frac{3x}{4}\) change de signe en 0 : \(f'\) n'est pas croissante sur \(\mathbb R\). L'étape 5 ne tient plus, et pour certaines valeurs de \(a\), \(g\) prend des valeurs négatives (en rouge) : la courbe passe sous la tangente.</div>
+    <div class="counter" id="counter"></div>
+    <div class="steps">
+
+      <section class="step">
+        <h2>Le théorème</h2>
+        <div class="thm"><b>Théorème.</b> Soit \(f\) une fonction deux fois dérivable sur un intervalle \(I\). Si \(f''(x)>0\) pour tout \(x\in I\), alors \(f\) est convexe sur \(I\).</div>
+        <p>On démontre que la courbe \(\mathcal C_f\) est <b>au-dessus de chacune de ses tangentes</b>, c'est-à-dire&nbsp;:</p>
+        \[\text{pour tout } a\in I \text{ et tout } x\in I,\quad f(x)\ \geqslant\ f'(a)(x-a)+f(a).\]
+        <details class="q"><summary>Question pour la classe</summary>
+          <p class="qtext">Pour montrer qu'une expression est supérieure à une autre, quelle méthode connaissez-vous&nbsp;?</p>
+          <p class="rep">On étudie le <b>signe de leur différence</b>. C'est toute l'idée de la preuve.</p>
+        </details>
+      </section>
+
+      <section class="step">
+        <h2>On fixe \(a\)</h2>
+        <p>Soit \(a\in I\), <b>fixé</b>. La tangente \(T_a\) à \(\mathcal C_f\) au point \(A\) d'abscisse \(a\) a pour équation&nbsp;:</p>
+        \[y=f'(a)(x-a)+f(a).\]
+        <div class="key">\(a\) est fixé&nbsp;: \(f(a)\) et \(f'(a)\) sont des <b>nombres</b>. La seule variable est \(x\).</div>
+        <p class="todo">▸ Déplacez le curseur \(a\)&nbsp;: la tangente change. Mais une fois \(a\) choisi, il ne bouge plus.</p>
+        <details class="q"><summary>Question pour la classe</summary>
+          <p class="qtext">Avec \(f(x)=x^2\) et \(a=3\), quelle est l'équation de \(T_a\)&nbsp;? Qu'est-ce qui varie&nbsp;?</p>
+          <p class="rep">\(f(3)=9\), \(f'(3)=6\)&nbsp;: \(y=6(x-3)+9=6x-9\). Les nombres 9 et 6 sont fixés&nbsp;; seul \(x\) varie.</p>
+        </details>
+      </section>
+
+      <section class="step">
+        <h2>La fonction auxiliaire \(g\)</h2>
+        <p>Pour comparer deux quantités, on étudie le <b>signe de leur différence</b>. On pose, pour \(x\in I\)&nbsp;:</p>
+        \[g(x)=f(x)-\big[f'(a)(x-a)+f(a)\big].\]
+        <p>Pour \(x\) donné, \(M\) est le point de \(\mathcal C_f\) et \(P\) celui de \(T_a\) d'abscisse \(x\)&nbsp;: \(g(x)=y_M-y_P\), l'<b>écart vertical</b> entre la courbe et la tangente.</p>
+        <ul>
+          <li><span class="c-pos">\(g(x)>0\)</span>&nbsp;: la courbe est au-dessus de la tangente&nbsp;;</li>
+          <li><span class="c-neg">\(g(x)&lt;0\)</span>&nbsp;: la courbe est en dessous.</li>
+        </ul>
+        <div class="key">Nouvel objectif&nbsp;: montrer que \(g(x)\geqslant 0\) pour tout \(x\in I\).</div>
+        <p class="todo">▸ Lancez ▶&nbsp;: la longueur du segment \([PM]\) devient l'ordonnée du point sur le graphe de \(g\).</p>
+        <details class="q"><summary>Question pour la classe</summary>
+          <p class="qtext">Que vaut \(g(a)\)&nbsp;? Le lire sur la figure, puis le calculer.</p>
+          <p class="rep">\(g(a)=f(a)-\big[f'(a)\times 0+f(a)\big]=0\)&nbsp;: en \(A\), la courbe et la tangente se touchent.</p>
+        </details>
+      </section>
+
+      <section class="step">
+        <h2>On dérive \(g\)</h2>
+        <p>\(g\) est dérivable sur \(I\). On dérive terme à terme, \(a\) étant fixé&nbsp;:</p>
+        \[g'(x)=f'(x)-\Big[\underbrace{f'(a)}_{\text{dérivée de } f'(a)(x-a)}+\underbrace{\ 0\ }_{\text{dérivée de } f(a)}\Big]\]
+        \[\boxed{\,g'(x)=f'(x)-f'(a)\,}\]
+        <div class="trap"><b>Erreur classique</b>&nbsp;: « dériver » \(f'(a)\) en \(f''(a)\). Or \(f'(a)\) est un nombre&nbsp;: \(x\mapsto f'(a)(x-a)\) est une fonction affine, de coefficient directeur \(f'(a)\).</div>
+        <details class="q"><summary>Question pour la classe</summary>
+          <p class="qtext">Avec \(f(x)=x^2\) et \(a=3\), calculer \(g(x)\) puis \(g'(x)\).</p>
+          <p class="rep">\(g(x)=x^2-(6x-9)=x^2-6x+9\), donc \(g'(x)=2x-6=f'(x)-f'(3)\).</p>
+        </details>
+      </section>
+
+      <section class="step">
+        <h2>Signe de \(g'\)&nbsp;: c'est ici que sert l'hypothèse</h2>
+        <p>Par hypothèse, \(f''(x)>0\) sur \(I\). Comme \(f''\) est la dérivée de \(f'\), la fonction \(f'\) est <b>strictement croissante</b> sur \(I\). Donc&nbsp;:</p>
+        <ul>
+          <li>si \(x&lt;a\)&nbsp;: \(f'(x)&lt;f'(a)\), donc <span class="c-neg">\(g'(x)&lt;0\)</span>&nbsp;;</li>
+          <li>si \(x>a\)&nbsp;: \(f'(x)>f'(a)\), donc <span class="c-pos">\(g'(x)>0\)</span>&nbsp;;</li>
+          <li>\(g'(a)=0\).</li>
+        </ul>
+        <div class="key">C'est le <b>seul</b> endroit de la preuve où l'on utilise \(f''>0\).</div>
+        <p class="todo">▸ Sur le graphe de \(f'\), le segment coloré entre la courbe et la droite \(y=f'(a)\) mesure \(g'(x)\). Faites varier \(x\).</p>
+        <details class="q"><summary>Question pour la classe</summary>
+          <p class="qtext">Choisissez le contre-exemple \(x^3/8-x\) avec \(a&lt;0\). Que devient le signe de \(g'\)&nbsp;?</p>
+          <p class="rep">\(f'\) décroît puis croît&nbsp;: \(g'\) change de signe plusieurs fois, et le raisonnement s'effondre.</p>
+        </details>
+      </section>
+
+      <section class="step">
+        <h2>Variations de \(g\)</h2>
+        <table class="tv">
+          <tr><th>\(x\)</th><td></td><td>\(a\)</td><td></td></tr>
+          <tr><th>\(g'(x)\)</th><td class="c-neg">\(-\)</td><td>\(0\)</td><td class="c-pos">\(+\)</td></tr>
+          <tr style="height:70px"><th>\(g\)</th><td class="up"><span class="arr">↘</span></td><td class="dn">\(0\)</td><td class="up"><span class="arr">↗</span></td></tr>
+        </table>
+        <p>\(g(a)=f(a)-\big[f'(a)\times 0+f(a)\big]=0\).</p>
+        <p>\(g\) admet donc un <b>minimum</b> en \(a\), égal à 0&nbsp;: pour tout \(x\in I\), \(g(x)\geqslant g(a)=0\).</p>
+        <details class="q"><summary>Question pour la classe</summary>
+          <p class="qtext">Pourquoi ne suffit-il pas de calculer \(g(a)=0\)&nbsp;?</p>
+          <p class="rep">Une valeur ne dit rien des autres&nbsp;: c'est parce que 0 est le <b>minimum</b> de \(g\) que \(g(x)\geqslant0\) partout.</p>
+        </details>
+      </section>
+
+      <section class="step">
+        <h2>Conclusion</h2>
+        \[g(x)\geqslant 0\iff f(x)\geqslant f'(a)(x-a)+f(a).\]
+        <p>\(\mathcal C_f\) est au-dessus de \(T_a\). Comme \(a\) est <b>quelconque</b> dans \(I\), \(\mathcal C_f\) est au-dessus de toutes ses tangentes&nbsp;: \(f\) est convexe sur \(I\).&nbsp;∎</p>
+        <p class="todo">▸ « Balayer les tangentes »&nbsp;: elles restent toutes sous la courbe.</p>
+        <div class="method"><b>À retenir&nbsp;: la méthode de la fonction auxiliaire</b>
+          <ol>
+            <li>Pour montrer \(A(x)\geqslant B(x)\), on pose \(g(x)=A(x)-B(x)\).</li>
+            <li>On étudie les variations de \(g\) (dérivée, signe).</li>
+            <li>On montre que le minimum de \(g\) est positif ou nul.</li>
+          </ol>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="ctrl">
+      <span class="lab c-t">a</span><input type="range" id="ra" step="0.01"><span class="v" id="va"></span>
+      <span class="lab c-pos">x</span><input type="range" id="rx" step="0.01"><span class="v" id="vx"></span>
+      <span></span>
+      <span style="display:flex;gap:8px;flex-wrap:wrap">
+        <button id="play">▶ Faire varier x</button>
+        <button id="sweep">Balayer les tangentes</button>
+      </span>
+      <span></span>
+    </div>
+
+    <div class="nav">
+      <button id="prev">◀ Précédent</button>
+      <div class="dots" id="dots"></div>
+      <button id="next" class="main">Suivant ▶</button>
+    </div>
+  </div>
+
+  <div class="plots">
+    <figure class="panel" id="pf">
+      <figcaption>La courbe \(\mathcal C_f\) et la tangente \(T_a\)</figcaption>
+      <svg id="sf" viewBox="0 0 640 350"></svg>
+    </figure>
+    <div class="row">
+      <figure class="panel" id="pg">
+        <figcaption>La fonction auxiliaire \(g\)</figcaption>
+        <svg id="sg" viewBox="0 0 400 260"></svg>
+        <div class="lock">Apparaît à l'étape 3</div>
+      </figure>
+      <figure class="panel" id="pd">
+        <figcaption>La dérivée \(f'\) — le segment coloré vaut \(g'(x)\)</figcaption>
+        <svg id="sd" viewBox="0 0 400 260"></svg>
+        <div class="lock">Apparaît à l'étape 5</div>
+      </figure>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const COL = { f:'#1d4ed8', t:'#d97706', pos:'#15803d', neg:'#dc2626', d:'#7c3aed' };
+
+const FUN = {
+  exp:  { f:x=>Math.exp(x/2)-x, d:x=>Math.exp(x/2)/2-1, xr:[-4,4], yr:[-1.5,5],   dr:[-1.5,3.2], a0:-1.2 },
+  para: { f:x=>(x-1)*(x-1)/4,   d:x=>(x-1)/2,           xr:[-3,5], yr:[-1.5,5],   dr:[-2.4,2.4], a0:2.6 },
+  cub:  { f:x=>x*x*x/8-x,       d:x=>3*x*x/8-1,         xr:[-4,4], yr:[-4.5,4.5], dr:[-1.5,5.5], a0:-1.6 }
+};
+const NSTEP = 7;
+let cur = 'exp';
+const st = { step:0, a:0, x:0, trace:0, trails:[] };
+let anim = null;
+
+const fmt = v => (Math.round(v*100)/100).toString().replace('.', ',').replace('-', '−');
+function nice(span){ const raw=span/5, p=10**Math.floor(Math.log10(raw)); for(const m of [1,2,5,10]) if(m*p>=raw) return m*p; }
+function mkP(W,H,xr,yr){
+  const l=34, r=W-12, t=10, b=H-30;
+  return { l,r,t,b,xr,yr,
+    X:x=>l+(x-xr[0])/(xr[1]-xr[0])*(r-l),
+    Y:y=>b-(y-yr[0])/(yr[1]-yr[0])*(b-t) };
+}
+function axes(p,id){
+  let s=`<defs><clipPath id="clip-${id}"><rect x="${p.l}" y="${p.t}" width="${p.r-p.l}" height="${p.b-p.t}"/></clipPath></defs>`;
+  s+=`<rect x="${p.l}" y="${p.t}" width="${p.r-p.l}" height="${p.b-p.t}" fill="#fff" stroke="#ddd"/>`;
+  const sx=nice(p.xr[1]-p.xr[0]), sy=nice(p.yr[1]-p.yr[0]);
+  const y0=Math.min(p.b,Math.max(p.t,p.Y(0))), x0=Math.min(p.r,Math.max(p.l,p.X(0)));
+  for(let x=Math.ceil(p.xr[0]/sx)*sx; x<=p.xr[1]+1e-9; x+=sx){
+    const X=p.X(x); s+=`<line x1="${X}" y1="${p.t}" x2="${X}" y2="${p.b}" class="grid"/>`;
+    if(Math.abs(x)>1e-9) s+=`<text x="${X}" y="${Math.min(y0+13,p.b-2)}" class="tick" text-anchor="middle">${fmt(x)}</text>`;
+  }
+  for(let y=Math.ceil(p.yr[0]/sy)*sy; y<=p.yr[1]+1e-9; y+=sy){
+    const Y=p.Y(y); s+=`<line x1="${p.l}" y1="${Y}" x2="${p.r}" y2="${Y}" class="grid"/>`;
+    if(Math.abs(y)>1e-9) s+=`<text x="${x0-4}" y="${Y+4}" class="tick" text-anchor="end">${fmt(y)}</text>`;
+  }
+  if(p.yr[0]<0 && p.yr[1]>0) s+=`<line x1="${p.l}" y1="${p.Y(0)}" x2="${p.r}" y2="${p.Y(0)}" class="axis"/>`;
+  if(p.xr[0]<0 && p.xr[1]>0) s+=`<line x1="${p.X(0)}" y1="${p.t}" x2="${p.X(0)}" y2="${p.b}" class="axis"/>`;
+  return s;
+}
+function path(p,fn,x0,x1,n=260){
+  if(x1<=x0) return '';
+  const span=p.yr[1]-p.yr[0]; let d='';
+  for(let i=0;i<=n;i++){
+    const x=x0+(x1-x0)*i/n; let y=fn(x);
+    y=Math.max(p.yr[0]-span,Math.min(p.yr[1]+span,y));
+    d+=(i?'L':'M')+p.X(x).toFixed(1)+' '+p.Y(y).toFixed(1);
+  }
+  return d;
+}
+const line=(x1,y1,x2,y2,c,w=2,extra='')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" ${extra}/>`;
+const dot=(x,y,c,r=5)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" stroke="#fff" stroke-width="1.5"/>`;
+const sgnCol=v=>v>=-1e-6?COL.pos:COL.neg;
+function letterAt(p,xv,txt,c){ return `<text x="${p.X(xv)}" y="${p.b+20}" class="lbl" fill="${c}" text-anchor="middle">${txt}</text>`; }
+function vdash(p,xv,yv,c){ return line(p.X(xv),p.Y(yv),p.X(xv),p.b,c,1.2,'stroke-dasharray="4 4" opacity=".7"'); }
+
+function render(){
+  const F=FUN[cur], s=st.step, a=st.a, x=st.x;
+  const fa=F.f(a), da=F.d(a);
+  const T=t=>da*(t-a)+fa, g=t=>F.f(t)-T(t);
+  const [x0,x1]=F.xr;
+
+  // ---- graphe de f
+  let p=mkP(640,350,F.xr,F.yr), h=axes(p,'f');
+  h+=`<g clip-path="url(#clip-f)">`;
+  if(s>=6) for(const ta of st.trails){
+    const fta=F.f(ta), dta=F.d(ta);
+    h+=`<path d="${path(p,t=>dta*(t-ta)+fta,x0,x1,2)}" stroke="${COL.t}" stroke-width="1" opacity=".35" fill="none"/>`;
+  }
+  if(s>=2) for(let i=0;i<=56;i++){
+    const t=x0+(x1-x0)*i/56;
+    h+=line(p.X(t),p.Y(F.f(t)),p.X(t),p.Y(T(t)),sgnCol(g(t)),1.5,'opacity=".22"');
+  }
+  h+=`<path d="${path(p,F.f,x0,x1)}" stroke="${COL.f}" stroke-width="3" fill="none"/>`;
+  if(s>=1) h+=`<path d="${path(p,T,x0,x1,2)}" stroke="${COL.t}" stroke-width="2.5" fill="none"/>`;
+  if(s>=2){
+    const c=sgnCol(g(x));
+    h+=vdash(p,x,Math.min(F.f(x),T(x)),c);
+    h+=line(p.X(x),p.Y(F.f(x)),p.X(x),p.Y(T(x)),c,5,'stroke-linecap="round"');
+    h+=dot(p.X(x),p.Y(T(x)),COL.t)+dot(p.X(x),p.Y(F.f(x)),COL.f);
+    h+=`<text x="${p.X(x)+9}" y="${p.Y(F.f(x))-6}" class="lbl" fill="${COL.f}">M</text>`;
+    h+=`<text x="${p.X(x)+9}" y="${p.Y(T(x))+15}" class="lbl" fill="${COL.t}">P</text>`;
+    const ym=(p.Y(F.f(x))+p.Y(T(x)))/2;
+    if(Math.abs(g(x))>0.25) h+=`<text x="${p.X(x)-8}" y="${ym+5}" class="lbl" fill="${c}" text-anchor="end">g(x)</text>`;
+  }
+  if(s>=1){
+    h+=vdash(p,a,fa,COL.t)+dot(p.X(a),p.Y(fa),'#111',5.5);
+    h+=`<text x="${p.X(a)-10}" y="${p.Y(fa)-8}" class="lbl" fill="#111" text-anchor="end">A</text>`;
+  }
+  h+=`</g>`;
+  // étiquettes des courbes
+  const xc=x0+(x1-x0)*0.06, yc=Math.min(F.yr[1]-0.3,F.f(xc));
+  h+=`<text x="${p.X(xc)+8}" y="${p.Y(yc)+4}" class="lbl" fill="${COL.f}">C<tspan dy="5" font-size="12">f</tspan></text>`;
+  if(s>=1){
+    let xt=a+(x1-x0)*0.3; if(xt>x1-0.4) xt=a-(x1-x0)*0.3;
+    const yt=Math.max(F.yr[0]+0.3,Math.min(F.yr[1]-0.3,T(xt)));
+    h+=`<text x="${p.X(xt)}" y="${p.Y(yt)+20}" class="lbl" fill="${COL.t}">T<tspan dy="5" font-size="12">a</tspan></text>`;
+    h+=letterAt(p,a,'a',COL.t);
+  }
+  if(s>=2 && Math.abs(p.X(x)-p.X(a))>14) h+=letterAt(p,x,'x',sgnCol(g(x)));
+  $('sf').innerHTML=h;
+
+  // ---- graphe de g
+  if(s>=2){
+    let gmin=0,gmax=0;
+    for(let i=0;i<=200;i++){ const v=g(x0+(x1-x0)*i/200); gmin=Math.min(gmin,v); gmax=Math.max(gmax,v); }
+    let ymax=Math.max(gmax,0.5)*1.12, ymin=Math.min(gmin*1.15,-0.12*ymax);
+    p=mkP(400,260,F.xr,[ymin,ymax]); h=axes(p,'g');
+    const tr=Math.min(st.trace,x1);
+    h+=`<g clip-path="url(#clip-g)">`;
+    for(let i=0;i<=40;i++){ const t=x0+(x1-x0)*i/40; if(t>tr) break;
+      h+=line(p.X(t),p.Y(0),p.X(t),p.Y(g(t)),sgnCol(g(t)),1.5,'opacity=".22"'); }
+    h+=`<path d="${path(p,g,x0,tr)}" stroke="#111" stroke-width="2.5" fill="none"/>`;
+    if(x<=tr+1e-9){
+      const c=sgnCol(g(x));
+      h+=line(p.X(x),p.Y(0),p.X(x),p.Y(g(x)),c,5,'stroke-linecap="round"');
+      h+=dot(p.X(x),p.Y(g(x)),c);
+    }
+    if(s>=5){
+      h+=`<circle cx="${p.X(a)}" cy="${p.Y(0)}" r="9" fill="none" stroke="${COL.t}" stroke-width="2"/>`;
+      h+=`<text x="${p.X(a)}" y="${p.Y(0)-14}" font-size="13" fill="${COL.t}" text-anchor="middle" font-weight="600">min = 0</text>`;
+    }
+    h+=dot(p.X(a),p.Y(0),'#111',4.5);
+    h+=`</g>`;
+    h+=letterAt(p,a,'a',COL.t);
+    if(Math.abs(p.X(x)-p.X(a))>14) h+=letterAt(p,x,'x',sgnCol(g(x)));
+    $('sg').innerHTML=h;
+  } else $('sg').innerHTML=axes(mkP(400,260,F.xr,[-1,4]),'g');
+
+  // ---- graphe de f'
+  if(s>=4){
+    p=mkP(400,260,F.xr,F.dr); h=axes(p,'d');
+    h+=`<g clip-path="url(#clip-d)">`;
+    // bande de signe de g'
+    const N=90;
+    for(let i=0;i<N;i++){ const t=x0+(x1-x0)*(i+.5)/N, w=(p.r-p.l)/N;
+      h+=`<rect x="${p.l+i*w}" y="${p.b-7}" width="${w+0.5}" height="7" fill="${sgnCol(F.d(t)-da)}" opacity=".7"/>`; }
+    h+=line(p.l,p.Y(da),p.r,p.Y(da),COL.t,1.8,'stroke-dasharray="6 4"');
+    h+=`<path d="${path(p,F.d,x0,x1)}" stroke="${COL.d}" stroke-width="3" fill="none"/>`;
+    const c=sgnCol(F.d(x)-da);
+    h+=line(p.X(x),p.Y(da),p.X(x),p.Y(F.d(x)),c,5,'stroke-linecap="round"');
+    h+=dot(p.X(x),p.Y(F.d(x)),COL.d)+dot(p.X(a),p.Y(da),'#111',4.5);
+    if(Math.abs(F.d(x)-da)>0.35) h+=`<text x="${p.X(x)+(x<a?-8:8)}" y="${(p.Y(da)+p.Y(F.d(x)))/2+5}" class="lbl" fill="${c}" text-anchor="${x<a?'end':'start'}">g′(x)</text>`;
+    h+=`</g>`;
+    h+=`<text x="${p.r-4}" y="${p.Y(da)-6}" class="lbl" fill="${COL.t}" text-anchor="end">y = f′(a)</text>`;
+    h+=`<text x="${p.l+6}" y="${p.t+16}" class="lbl" fill="${COL.d}">f′</text>`;
+    h+=`<text x="${p.r-4}" y="${p.b-11}" font-size="10.5" fill="#555" text-anchor="end">signe de g′(x)</text>`;
+    h+=letterAt(p,a,'a',COL.t);
+    if(Math.abs(p.X(x)-p.X(a))>14) h+=letterAt(p,x,'x',c);
+    $('sd').innerHTML=h;
+  } else $('sd').innerHTML=axes(mkP(400,260,F.xr,F.dr),'d');
+}
+
+// ---- animation
+function stopAnim(){ if(anim){ cancelAnimationFrame(anim); anim=null; } updateUI(); }
+function animate(dur,onFrame){
+  if(anim) cancelAnimationFrame(anim);
+  const t0=performance.now();
+  const loop=now=>{
+    const u=Math.min(1,(now-t0)/dur);
+    onFrame(u); syncSliders(); render();
+    if(u<1) anim=requestAnimationFrame(loop); else { anim=null; updateUI(); }
+  };
+  anim=requestAnimationFrame(loop); updateUI();
+}
+function playX(){
+  const [x0,x1]=FUN[cur].xr;
+  st.trace=x0;
+  animate(4500,u=>{ st.x=x0+u*(x1-x0); st.trace=st.x; });
+}
+function sweep(){
+  const [x0,x1]=FUN[cur].xr, lo=x0+0.2, hi=x1-0.2;
+  st.trails=[]; let last=-1e9;
+  animate(6000,u=>{ st.a=lo+u*(hi-lo); if(st.a-last>=0.32){ st.trails.push(st.a); last=st.a; } });
+}
+
+// ---- interface
+function syncSliders(){
+  $('ra').value=st.a; $('rx').value=st.x;
+  $('va').textContent=fmt(st.a); $('vx').textContent=fmt(st.x);
+}
+function setFun(k){
+  stopAnim();
+  cur=k; const F=FUN[k];
+  for(const id of ['ra','rx']){ $(id).min=F.xr[0]; $(id).max=F.xr[1]; }
+  st.a=F.a0; st.x=Math.min(F.xr[1]-0.3,F.a0+2.2);
+  st.trace=st.step>2?F.xr[1]:F.xr[0];
+  if(st.step===2) st.trace=F.xr[1];
+  st.trails=[];
+  $('warn').classList.toggle('on',k==='cub');
+  syncSliders(); render();
+}
+function setStep(i){
+  i=Math.max(0,Math.min(NSTEP-1,i));
+  const prev=st.step; st.step=i;
+  document.querySelectorAll('.step').forEach((el,k)=>el.classList.toggle('on',k===i));
+  document.querySelectorAll('#dots button').forEach((el,k)=>el.classList.toggle('on',k===i));
+  $('counter').textContent=`Étape ${i+1} / ${NSTEP}`;
+  $('pg').classList.toggle('locked',i<2);
+  $('pd').classList.toggle('locked',i<4);
+  if(i!==6) st.trails=[];
+  if(i<2) st.trace=FUN[cur].xr[0];
+  updateUI(); render();
+  if(i===2 && prev<2) playX();
+  else if(i>2 && st.trace<FUN[cur].xr[1]) st.trace=FUN[cur].xr[1], render();
+}
+function updateUI(){
+  const s=st.step;
+  $('prev').disabled=s===0; $('next').disabled=s===NSTEP-1;
+  $('ra').disabled=s<1; $('rx').disabled=s<2; $('play').disabled=s<2;
+  $('sweep').style.display=s===6?'':'none';
+  $('play').textContent=anim?'⏸ Stop':'▶ Faire varier x';
+}
+
+const dots=$('dots');
+for(let k=0;k<NSTEP;k++){ const b=document.createElement('button'); b.title='Étape '+(k+1); b.onclick=()=>setStep(k); dots.appendChild(b); }
+$('prev').onclick=()=>setStep(st.step-1);
+$('next').onclick=()=>setStep(st.step+1);
+$('fun').onchange=e=>setFun(e.target.value);
+$('ra').oninput=e=>{ stopAnim(); st.a=+e.target.value; syncSliders(); render(); };
+$('rx').oninput=e=>{ stopAnim(); st.x=+e.target.value; st.trace=Math.max(st.trace,st.x); syncSliders(); render(); };
+$('play').onclick=()=>{ if(anim) stopAnim(); else playX(); };
+$('sweep').onclick=()=>sweep();
+document.addEventListener('keydown',e=>{
+  if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); setStep(st.step+1); }
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); setStep(st.step-1); }
+});
+
+setFun('exp');
+setStep(0);
+</script>
+</body>
+</html>
