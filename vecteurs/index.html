@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vecteurs – Seconde</title>
+<style>
+  :root{
+    --bg:#f6f4ee; --card:#fff; --ink:#1e2330; --muted:#6b7080;
+    --accent:#2f6fdb; --accent2:#e0482f; --line:#e6e2d6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 20px 48px}
+  .niveau{display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:#e7eefb;border-radius:999px;padding:4px 12px}
+  h1{font-size:2rem;margin:12px 0 4px}
+  .sous{color:var(--muted);margin:0 0 28px}
+  h2{font-size:1.15rem;margin:28px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--line)}
+  .liste{display:grid;gap:14px}
+  a.carte{display:flex;gap:16px;align-items:center;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;transition:transform .12s,box-shadow .12s}
+  a.carte:hover,a.carte:focus-visible{transform:translateY(-2px);box-shadow:0 6px 18px rgba(30,35,48,.08);outline:none}
+  .icone{flex:0 0 52px;height:52px;border-radius:14px;display:grid;place-items:center}
+  .icone svg{width:30px;height:30px}
+  .i1{background:#e7eefb;color:var(--accent)}
+  .i2{background:#fbe9e5;color:var(--accent2)}
+  .titre{font-weight:700;font-size:1.08rem}
+  .desc{color:var(--muted);font-size:.95rem;margin-top:2px}
+  .fleche{margin-left:auto;color:var(--muted);font-size:1.4rem}
+  footer{margin-top:40px;color:var(--muted);font-size:.85rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="niveau">Seconde</span>
+  <h1>Les vecteurs</h1>
+  <p class="sous">Applications et corrections du chapitre.</p>
+
+  <h2>Chapitre 1 – Translations et vecteurs</h2>
+  <div class="liste">
+    <a class="carte" href="chapitre1/">
+      <div class="icone i1" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19 19 5"/><path d="M11 5h8v8"/></svg>
+      </div>
+      <div>
+        <div class="titre">Atelier Vecteurs</div>
+        <div class="desc">S'entraîner : translations, vecteurs égaux, milieu, somme et relation de Chasles.</div>
+      </div>
+      <span class="fleche" aria-hidden="true">›</span>
+    </a>
+
+    <a class="carte" href="chapitre1/exercice17.html">
+      <div class="icone i2" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20 12 4l9 16Z"/><circle cx="12" cy="20" r="1.6" fill="currentColor"/></svg>
+      </div>
+      <div>
+        <div class="titre">Correction de l'exercice 17</div>
+        <div class="desc">Translations et milieux : correction animée, pas à pas.</div>
+      </div>
+      <span class="fleche" aria-hidden="true">›</span>
+    </a>
+  </div>
+
+  <footer>Lycée Saint-Jean · Mathématiques</footer>
+</div>
+</body>
+</html>
