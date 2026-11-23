@@ -18,6 +18,7 @@ window.MathJax = {
   --f:#1d4ed8; --t:#d97706; --pos:#15803d; --neg:#dc2626; --d:#7c3aed;
 }
 *{box-sizing:border-box}
+html,body,button,input,select,summary{touch-action:manipulation}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,sans-serif;font-size:17px;line-height:1.45}
 header{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;padding:12px 18px;border-bottom:1px solid var(--line);background:#fff}
 header h1{font-size:1.25rem;margin:0;font-weight:700}
@@ -39,10 +40,12 @@ select{padding:4px 8px;border:1px solid var(--line);border-radius:6px;background
 .trap{border-left:4px solid var(--neg);background:#fdeeee;padding:8px 12px;border-radius:0 8px 8px 0;margin:.6em 0}
 .method{border:1px dashed var(--muted);padding:8px 12px;border-radius:8px;margin-top:.7em}
 .todo{color:#444;font-style:italic}
-details.q{margin-top:.7em;background:#faf8f3;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
-details.q summary{cursor:pointer;font-weight:600}
-details.q .qtext{margin:.3em 0}
-details.q .rep{color:#333;border-top:1px solid var(--line);padding-top:.3em}
+.q{margin-top:.7em;background:#faf8f3;border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.q .qhead{font-weight:700}
+.q .qtext{margin:.3em 0}
+details.rep{border-top:1px solid var(--line);padding-top:.35em;margin-top:.3em}
+details.rep summary{cursor:pointer;font-weight:600;color:var(--f)}
+details.rep p{margin:.35em 0 .1em}
 .warn{display:none;margin:0 0 10px;border:1px solid #f3c2c2;background:#fff5f5;padding:8px 12px;border-radius:8px;font-size:.95rem}
 .warn.on{display:block}
 table.tv{border-collapse:collapse;margin:.5em 0;font-size:1.05rem}
@@ -104,10 +107,10 @@ svg .lbl{font-family:"Source Serif 4",serif;font-style:italic;font-size:16px}
         <div class="thm"><b>Théorème.</b> Soit \(f\) une fonction deux fois dérivable sur un intervalle \(I\). Si \(f''(x)>0\) pour tout \(x\in I\), alors \(f\) est convexe sur \(I\).</div>
         <p>On démontre que la courbe \(\mathcal C_f\) est <b>au-dessus de chacune de ses tangentes</b>, c'est-à-dire que, pour tout \(a\in I\) et tout \(x\in I\)&nbsp;:</p>
         \[f(x)\ \geqslant\ f'(a)(x-a)+f(a).\]
-        <details class="q"><summary>Question pour la classe</summary>
+        <div class="q"><div class="qhead">Question pour la classe</div>
           <p class="qtext">Pour montrer qu'une expression est supérieure à une autre, quelle méthode connaissez-vous&nbsp;?</p>
-          <p class="rep">On étudie le <b>signe de leur différence</b>. C'est toute l'idée de la preuve.</p>
-        </details>
+          <details class="rep"><summary>Réponse</summary><p>On étudie le <b>signe de leur différence</b>. C'est toute l'idée de la preuve.</p></details>
+        </div>
       </section>
 
       <section class="step">
@@ -116,10 +119,6 @@ svg .lbl{font-family:"Source Serif 4",serif;font-style:italic;font-size:16px}
         \[y=f'(a)(x-a)+f(a).\]
         <div class="key">\(a\) est fixé&nbsp;: \(f(a)\) et \(f'(a)\) sont des <b>nombres</b>. La seule variable est \(x\).</div>
         <p class="todo">▸ Déplacez le curseur \(a\)&nbsp;: la tangente change. Mais une fois \(a\) choisi, il ne bouge plus.</p>
-        <details class="q"><summary>Question pour la classe</summary>
-          <p class="qtext">Avec \(f(x)=x^2\) et \(a=3\), quelle est l'équation de \(T_a\)&nbsp;? Qu'est-ce qui varie&nbsp;?</p>
-          <p class="rep">\(f(3)=9\), \(f'(3)=6\)&nbsp;: \(y=6(x-3)+9=6x-9\). Les nombres 9 et 6 sont fixés&nbsp;; seul \(x\) varie.</p>
-        </details>
       </section>
 
       <section class="step">
@@ -133,10 +132,6 @@ svg .lbl{font-family:"Source Serif 4",serif;font-style:italic;font-size:16px}
         </ul>
         <div class="key">Nouvel objectif&nbsp;: montrer que \(g(x)\geqslant 0\) pour tout \(x\in I\).</div>
         <p class="todo">▸ Lancez ▶&nbsp;: la longueur du segment \([PM]\) devient l'ordonnée du point sur le graphe de \(g\).</p>
-        <details class="q"><summary>Question pour la classe</summary>
-          <p class="qtext">Que vaut \(g(a)\)&nbsp;? Le lire sur la figure, puis le calculer.</p>
-          <p class="rep">\(g(a)=f(a)-\big[f'(a)\times 0+f(a)\big]=0\)&nbsp;: en \(A\), la courbe et la tangente se touchent.</p>
-        </details>
       </section>
 
       <section class="step">
@@ -145,10 +140,6 @@ svg .lbl{font-family:"Source Serif 4",serif;font-style:italic;font-size:16px}
         \[g'(x)=f'(x)-\Big[\underbrace{f'(a)}_{\left(f'(a)(x-a)\right)'}+\underbrace{\ 0\ }_{\left(f(a)\right)'}\Big]\]
         \[\boxed{\,g'(x)=f'(x)-f'(a)\,}\]
         <div class="trap"><b>Erreur classique</b>&nbsp;: « dériver » \(f'(a)\) en \(f''(a)\). Or \(f'(a)\) est un nombre&nbsp;: \(x\mapsto f'(a)(x-a)\) est une fonction affine, de coefficient directeur \(f'(a)\).</div>
-        <details class="q"><summary>Question pour la classe</summary>
-          <p class="qtext">Avec \(f(x)=x^2\) et \(a=3\), calculer \(g(x)\) puis \(g'(x)\).</p>
-          <p class="rep">\(g(x)=x^2-(6x-9)=x^2-6x+9\), donc \(g'(x)=2x-6=f'(x)-f'(3)\).</p>
-        </details>
       </section>
 
       <section class="step">
@@ -161,10 +152,6 @@ svg .lbl{font-family:"Source Serif 4",serif;font-style:italic;font-size:16px}
         </ul>
         <div class="key">C'est le <b>seul</b> endroit de la preuve où l'on utilise \(f''>0\).</div>
         <p class="todo">▸ Sur le graphe de \(f'\), le segment coloré entre la courbe et la droite \(y=f'(a)\) mesure \(g'(x)\). Faites varier \(x\).</p>
-        <details class="q"><summary>Question pour la classe</summary>
-          <p class="qtext">Choisissez le contre-exemple \(x^3/8-x\) avec \(a&lt;0\). Que devient le signe de \(g'\)&nbsp;?</p>
-          <p class="rep">\(f'\) décroît puis croît&nbsp;: \(g'\) change de signe plusieurs fois, et le raisonnement s'effondre.</p>
-        </details>
       </section>
 
       <section class="step">
@@ -197,10 +184,10 @@ svg .lbl{font-family:"Source Serif 4",serif;font-style:italic;font-size:16px}
         </svg>
         <p>\(g(a)=f(a)-\big[f'(a)\times 0+f(a)\big]=0\).</p>
         <p>\(g\) admet donc un <b>minimum</b> en \(a\), égal à 0&nbsp;: pour tout \(x\in I\), \(g(x)\geqslant g(a)=0\).</p>
-        <details class="q"><summary>Question pour la classe</summary>
+        <div class="q"><div class="qhead">Question pour la classe</div>
           <p class="qtext">Pourquoi ne suffit-il pas de calculer \(g(a)=0\)&nbsp;?</p>
-          <p class="rep">Une valeur ne dit rien des autres&nbsp;: c'est parce que 0 est le <b>minimum</b> de \(g\) que \(g(x)\geqslant0\) partout.</p>
-        </details>
+          <details class="rep"><summary>Réponse</summary><p>Une valeur ne dit rien des autres&nbsp;: c'est parce que 0 est le <b>minimum</b> de \(g\) que \(g(x)\geqslant0\) partout.</p></details>
+        </div>
       </section>
 
       <section class="step">
